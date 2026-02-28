@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.example.wordcut.ui.screens.WordCutScreen
+import com.example.wordcut.ui.screens.GameScreen
 import com.example.wordcut.ui.theme.WordCutTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Scaffold (modifier = Modifier.fillMaxSize()) { innerPadding ->
                 WordCutTheme {
-                    WordCutScreen(
+                    GameScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

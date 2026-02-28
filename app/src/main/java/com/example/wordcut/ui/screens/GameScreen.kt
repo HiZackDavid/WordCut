@@ -12,7 +12,7 @@ import com.example.wordcut.ui.components.WordCutRow
 import com.example.wordcut.ui.theme.WordCutTheme
 
 @Composable
-fun WordCutScreen(modifier: Modifier = Modifier) {
+fun GameScreen(modifier: Modifier = Modifier) {
     val initialWord = "Matelas"
     val initialLetters: List<Char> = initialWord.uppercase().toList()
     val nbLetters = initialLetters.size
@@ -64,8 +64,8 @@ fun WordCutScreen(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun WordCutGamePreview() {
+fun GameGamePreview() {
     WordCutTheme {
-        WordCutScreen()
+        GameScreen()
     }
 }
