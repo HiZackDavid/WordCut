@@ -52,8 +52,8 @@ fun WordCutRow(row: WordCutRowModel, modifier: Modifier = Modifier) {
 }
 
 private object DemoRows {
-    val word = "MATELAS"
-    val letters = word.uppercase().toList()
+    const val WORD = "MATELAS"
+    val letters = WORD.uppercase().toList()
 
     val firstRow = WordCutRowModel(
         letters = letters,
