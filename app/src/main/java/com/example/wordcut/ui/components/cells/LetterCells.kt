@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,7 +20,10 @@ import androidx.compose.ui.unit.sp
 fun DisabledCell(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .background(Color.Gray, RoundedCornerShape(12.dp)),
+            .background(
+                color = Color.Gray,
+                shape = RoundedCornerShape(size = 12.dp)
+            ),
         contentAlignment = Alignment.Center
     ) {}
 }
@@ -30,7 +34,7 @@ fun CommittedCell(letter: Char, modifier: Modifier = Modifier) {
         modifier = modifier
             .background(
                 color = Color(0xFF2FB39A),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(size = 12.dp)
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -49,9 +53,13 @@ fun WriteCell(modifier: Modifier = Modifier, letter: Char? = null) {
         modifier = modifier
             .background(
                 color = Color.White,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(size = 12.dp)
             )
-            .border(2.dp, Color(0xFF2FB39A), RoundedCornerShape(12.dp)),
+            .border(
+                width = 2.dp,
+                color = if (letter == null) Color(0xFFE5E1E1) else Color(0xFF2FB39A),
+                shape = RoundedCornerShape(size = 12.dp)
+            ),
         contentAlignment = Alignment.Center
     ) {
         Text(

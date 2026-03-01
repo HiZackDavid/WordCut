@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,14 +26,21 @@ import androidx.compose.ui.unit.sp
 fun DisabledScoreCell(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .background(Color.Gray, RoundedCornerShape(12.dp))
-            .border(3.dp, Color.Black, RoundedCornerShape(12.dp))
+            .background(
+                color = Color.Gray,
+                shape = RoundedCornerShape(size = 12.dp)
+            )
+            .border(
+                width = 2.dp,
+                color = Color.Black,
+                shape = RoundedCornerShape(size = 12.dp)
+            )
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawLine(
                 color = Color.Red,
-                start = Offset(0f, size.height),
-                end = Offset(size.width, 0f),
+                start = Offset(x = 0f, y= size.height),
+                end = Offset(x = size.width, y = 0f),
                 strokeWidth = 6f
             )
         }
@@ -41,12 +49,12 @@ fun DisabledScoreCell(modifier: Modifier = Modifier) {
 
 @Composable
 fun ScoreCell(modifier: Modifier = Modifier, point1: Int = 0, point2: Int = 0){
-    val shape = RoundedCornerShape(12.dp)
+    val shape = RoundedCornerShape(size = 12.dp)
 
-    val point1BgColor = Color(0xFFF2C14E)
-    val point1TextColor = Color(0xFF1B1B1B)
-    val point2BgColor = Color(0xFF2D6F89)
-    val noPointBgColor = Color(0xFFF5F5F5)
+    val point1BgColor = Color(0xFF89B32F)
+    val point1TextColor = Color.White
+    val point2BgColor = Color(0xFF9B2FB3)
+    val point2TextColor = Color.White
 
     Box (
         modifier = modifier
@@ -56,7 +64,7 @@ fun ScoreCell(modifier: Modifier = Modifier, point1: Int = 0, point2: Int = 0){
                 shape = shape
             )
             .border(
-                width = 3.dp,
+                width = 2.dp,
                 color = Color.Black,
                 shape = shape
             ),
@@ -67,9 +75,7 @@ fun ScoreCell(modifier: Modifier = Modifier, point1: Int = 0, point2: Int = 0){
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize()
-                    .background(
-                        if (point1 > 0) point1BgColor else noPointBgColor
-                    ),
+                    .background(point1BgColor),
                 contentAlignment = Alignment.Center
             ) {
                 if (point1 > 0) {
@@ -86,21 +92,22 @@ fun ScoreCell(modifier: Modifier = Modifier, point1: Int = 0, point2: Int = 0){
                 modifier = Modifier
                     .width(1.dp)
                     .fillMaxSize()
-                    .background(Color.Black)
+                    .background(Color.Black.copy(alpha = 0.2f))
             )
 
-            if (point2 > 0) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                        .background(point2BgColor),
-                    contentAlignment = Alignment.Center
-                ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .background(point2BgColor),
+                contentAlignment = Alignment.Center
+            ) {
+                if (point2 > 0) {
                     Text(
                         text = point2.toString(),
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = point2TextColor
                     )
                 }
             }
