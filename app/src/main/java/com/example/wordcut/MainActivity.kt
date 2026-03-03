@@ -19,7 +19,6 @@ class MainActivity : ComponentActivity() {
             Scaffold (modifier = Modifier.fillMaxSize()) { innerPadding ->
                 WordCutTheme {
                     GameScreen(
-                        word = "Matelas",
                         modifier = Modifier
                             .padding(paddingValues = innerPadding)
                     )

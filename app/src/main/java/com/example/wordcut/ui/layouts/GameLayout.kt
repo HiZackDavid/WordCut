@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -13,29 +12,7 @@ import com.example.wordcut.ui.components.WordCutRow
 import com.example.wordcut.ui.models.WordCutRowModel
 
 @Composable
-fun GameLayout(word: String, modifier: Modifier = Modifier, startList: List<WordCutRowModel> = emptyList()) {
-    val rows = remember(word) {
-        startList.ifEmpty {
-            val letters = word.uppercase().toList()
-            listOf(
-                WordCutRowModel(
-                    letters = letters,
-                    nbCells = letters.size,
-                    nbActiveCells = letters.size,
-                    hasCommitted = true,
-                    isScoreDisabled = true
-                ),
-                WordCutRowModel(
-                    letters = emptyList(),
-                    nbCells = letters.size,
-                    nbActiveCells = letters.size-1,
-                    hasCommitted = false,
-                    isScoreDisabled = false
-                )
-            )
-        }
-    }
-
+fun GameLayout(modifier: Modifier = Modifier, rows: List<WordCutRowModel> = emptyList()) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -94,12 +71,6 @@ private fun buildDemoRows(): List<WordCutRowModel> {
 
 @Preview
 @Composable
-fun StartGamePreview() {
-    GameLayout("Matelas")
-}
-
-@Preview
-@Composable
 fun IncompleteGamePreview() {
-    GameLayout("Matelas", startList = buildDemoRows())
+    GameLayout(rows = buildDemoRows())
 }
