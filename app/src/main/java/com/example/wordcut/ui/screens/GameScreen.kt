@@ -1,9 +1,13 @@
 package com.example.wordcut.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,10 +32,25 @@ fun GameScreenContent(
     modifier: Modifier = Modifier,
     uiState: GameUiState = GameUiState()
 ) {
-    GameLayout(
-        modifier = modifier.fillMaxWidth(),
-        rows = uiState.rows
-    )
+    Scaffold (
+        modifier = modifier.fillMaxSize(),
+    ) { innerPadding ->
+        if (uiState.rows.isEmpty()) {
+            Box (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+
+            ){
+                Text("Loading...")
+            }
+        } else {
+            GameLayout(
+                modifier = modifier.padding(innerPadding),
+                rows = uiState.rows
+            )
+        }
+    }
 }
 
 @Composable
@@ -92,10 +111,21 @@ private fun buildDemoRows(): List<GameRowModel> {
     )
 }
 
+
 @Preview
 @Composable
-fun IncompleteGamePreview() {
+fun IncompleteGameLayoutPreview() {
     GameLayout(rows = buildDemoRows())
+}
+
+@Preview
+@Composable
+fun EmptyGamePreview() {
+    GameScreenContent(
+        uiState = GameUiState(
+            rows = emptyList()
+        )
+    )
 }
 
 @Preview(
