@@ -2,7 +2,7 @@ package com.example.wordcut.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.example.wordcut.ui.models.GameUiState
-import com.example.wordcut.ui.models.WordCutRowModel
+import com.example.wordcut.ui.models.GameRowModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,14 +18,14 @@ class GameViewModel: ViewModel() {
             word = word,
             currentRowIndex = 2,
             rows = listOf(
-                WordCutRowModel(
+                GameRowModel(
                     letters = letters,
                     nbCells = letters.size,
                     nbActiveCells = letters.size,
                     hasCommitted = true,
                     isScoreDisabled = true
                 ),
-                WordCutRowModel(
+                GameRowModel(
                     letters = emptyList(),
                     nbCells = letters.size,
                     nbActiveCells = letters.size-1,

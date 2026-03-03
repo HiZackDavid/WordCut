@@ -1,6 +1,6 @@
 package com.example.wordcut.ui.models
 
-data class WordCutRowModel(
+data class GameRowModel(
     val letters: List<Char>,
     val nbCells: Int,
     val nbActiveCells: Int,

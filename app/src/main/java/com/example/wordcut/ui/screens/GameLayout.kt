@@ -8,11 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.wordcut.ui.components.WordCutRow
-import com.example.wordcut.ui.models.WordCutRowModel
+import com.example.wordcut.ui.components.GameRow
+import com.example.wordcut.ui.models.GameRowModel
 
 @Composable
-fun GameLayout(modifier: Modifier = Modifier, rows: List<WordCutRowModel> = emptyList()) {
+fun GameLayout(modifier: Modifier = Modifier, rows: List<GameRowModel> = emptyList()) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -20,24 +20,24 @@ fun GameLayout(modifier: Modifier = Modifier, rows: List<WordCutRowModel> = empt
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ){
         for (row in rows) {
-            WordCutRow(row)
+            GameRow(row)
         }
     }
 }
 
-private fun buildDemoRows(): List<WordCutRowModel> {
+private fun buildDemoRows(): List<GameRowModel> {
     val letters: List<Char> = "MATELAS".toList()
     val nbLetters = letters.size
 
     return listOf(
-        WordCutRowModel(
+        GameRowModel(
             letters = letters,
             nbCells = nbLetters,
             nbActiveCells = nbLetters,
             hasCommitted = true,
             isScoreDisabled = true
         ),
-        WordCutRowModel(
+        GameRowModel(
             letters = "METAL".toList(),
             nbCells = nbLetters,
             nbActiveCells = nbLetters-2,
@@ -45,7 +45,7 @@ private fun buildDemoRows(): List<WordCutRowModel> {
             point1 = 2,
             point2 = 2
         ),
-        WordCutRowModel(
+        GameRowModel(
             letters = "LAME".toList(),
             nbCells = nbLetters,
             nbActiveCells = nbLetters-3,
@@ -53,14 +53,14 @@ private fun buildDemoRows(): List<WordCutRowModel> {
             point1 = 3,
             point2 = 2
         ),
-        WordCutRowModel(
+        GameRowModel(
             letters = "AME".toList(),
             nbCells = nbLetters,
             nbActiveCells = nbLetters-4,
             hasCommitted = true,
             point1 = 3
         ),
-        WordCutRowModel(
+        GameRowModel(
             letters = "M".toList(),
             nbCells = nbLetters,
             nbActiveCells = nbLetters-5,

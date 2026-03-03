@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.wordcut.ui.models.GameUiState
-import com.example.wordcut.ui.models.WordCutRowModel
+import com.example.wordcut.ui.models.GameRowModel
 import com.example.wordcut.ui.theme.WordCutTheme
 import com.example.wordcut.ui.viewmodels.GameViewModel
 
@@ -44,14 +44,14 @@ fun GameScreenPhonePreview() {
                 word = "Matelas",
                 currentRowIndex = 1,
                 rows = listOf(
-                    WordCutRowModel(
+                    GameRowModel(
                         letters = letters,
                         nbCells = letters.size,
                         nbActiveCells = letters.size,
                         hasCommitted = true,
                         isScoreDisabled = true
                     ),
-                    WordCutRowModel(
+                    GameRowModel(
                         letters = emptyList(),
                         nbCells = letters.size,
                         nbActiveCells = letters.size-1,

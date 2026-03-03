@@ -13,10 +13,10 @@ import com.example.wordcut.ui.components.cells.DisabledCell
 import com.example.wordcut.ui.components.cells.DisabledScoreCell
 import com.example.wordcut.ui.components.cells.ScoreCell
 import com.example.wordcut.ui.components.cells.WriteCell
-import com.example.wordcut.ui.models.WordCutRowModel
+import com.example.wordcut.ui.models.GameRowModel
 
 @Composable
-fun WordCutRow(row: WordCutRowModel, modifier: Modifier = Modifier) {
+fun GameRow(row: GameRowModel, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -55,14 +55,14 @@ private object DemoRows {
     const val WORD = "MATELAS"
     val letters = WORD.uppercase().toList()
 
-    val firstRow = WordCutRowModel(
+    val firstRow = GameRowModel(
         letters = letters,
         nbCells = letters.size,
         nbActiveCells = letters.size,
         hasCommitted = true,
         isScoreDisabled = true
     )
-    val dualScore = WordCutRowModel(
+    val dualScore = GameRowModel(
         letters = "METAL".toList(),
         nbCells = letters.size,
         nbActiveCells = letters.size-2,
@@ -70,14 +70,14 @@ private object DemoRows {
         point1 = 2,
         point2 = 2
     )
-    val singleScore = WordCutRowModel(
+    val singleScore = GameRowModel(
         letters = "AME".toList(),
         nbCells = letters.size,
         nbActiveCells = letters.size-4,
         hasCommitted = true,
         point1 = 3
     )
-    val playableRow = WordCutRowModel(
+    val playableRow = GameRowModel(
         letters = "M".toList(),
         nbCells = letters.size,
         nbActiveCells = letters.size-5,
@@ -88,23 +88,23 @@ private object DemoRows {
 @Preview
 @Composable
 fun FirstRowPreview() {
-   WordCutRow(DemoRows.firstRow)
+   GameRow(DemoRows.firstRow)
 }
 
 @Preview
 @Composable
 fun DualScorePreview() {
-    WordCutRow(DemoRows.dualScore)
+    GameRow(DemoRows.dualScore)
 }
 
 @Preview
 @Composable
 fun SingleScorePreview() {
-    WordCutRow(DemoRows.singleScore)
+    GameRow(DemoRows.singleScore)
 }
 
 @Preview
 @Composable
 fun PlayablePreview() {
-    WordCutRow(DemoRows.playableRow)
+    GameRow(DemoRows.playableRow)
 }
