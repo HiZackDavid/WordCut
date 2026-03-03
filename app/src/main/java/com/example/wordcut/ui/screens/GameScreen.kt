@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.wordcut.ui.layouts.GameLayout
 import com.example.wordcut.ui.models.GameUiState
 import com.example.wordcut.ui.models.WordCutRowModel
 import com.example.wordcut.ui.theme.WordCutTheme

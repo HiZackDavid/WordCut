@@ -1,4 +1,4 @@
-package com.example.wordcut.ui.layouts
+package com.example.wordcut.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
