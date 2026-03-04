@@ -21,18 +21,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+private val TextFontSize = 18.sp
+private val CellBorderSize = 4.dp
+private val CellBorderWidth = 1.dp
+private val CellBorderColor = Color.Gray
+private val DisabledBgColor = Color(0xFFa4aec4)
+private val Point1TextColor = Color.White
+private val Point1BgColor = Color(0xFF55acee)
+private val Point2TextColor = Color.White
+private val Point2BgColor = Color(0xFF4267b2)
+
 @Composable
 fun DisabledScoreCell(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .background(
-                color = Color.Gray,
-                shape = RoundedCornerShape(size = 12.dp)
-            )
-            .border(
-                width = 2.dp,
-                color = Color.Black,
-                shape = RoundedCornerShape(size = 12.dp)
+                color = DisabledBgColor,
+                shape = RoundedCornerShape(CellBorderSize)
             )
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -48,23 +53,13 @@ fun DisabledScoreCell(modifier: Modifier = Modifier) {
 
 @Composable
 fun ScoreCell(modifier: Modifier = Modifier, point1: Int = 0, point2: Int = 0){
-    val shape = RoundedCornerShape(size = 12.dp)
-
-    val point1BgColor = Color(0xFF89B32F)
-    val point1TextColor = Color.White
-    val point2BgColor = Color(0xFF9B2FB3)
-    val point2TextColor = Color.White
+    val shape = RoundedCornerShape(CellBorderSize)
 
     Box (
         modifier = modifier
             .clip(shape)
             .background(
                 color = Color.White,
-                shape = shape
-            )
-            .border(
-                width = 2.dp,
-                color = Color.Black,
                 shape = shape
             ),
         contentAlignment = Alignment.Center
@@ -74,47 +69,43 @@ fun ScoreCell(modifier: Modifier = Modifier, point1: Int = 0, point2: Int = 0){
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize()
-                    .background(point1BgColor),
+                    .background(Point1BgColor),
                 contentAlignment = Alignment.Center
             ) {
-                if (point1 > 0) {
-                    Text(
-                        text = point1.toString(),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = point1TextColor
-                    )
-                }
+                Text(
+                    text = point1.toString(),
+                    fontSize = TextFontSize,
+                    fontWeight = FontWeight.Bold,
+                    color = Point1TextColor
+                )
             }
 
             Box(
                 modifier = Modifier
                     .width(1.dp)
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.2f))
+                    .background(CellBorderColor.copy(alpha = 0.2f))
             )
 
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize()
-                    .background(point2BgColor),
+                    .background(Point2BgColor),
                 contentAlignment = Alignment.Center
             ) {
-                if (point2 > 0) {
-                    Text(
-                        text = point2.toString(),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = point2TextColor
-                    )
-                }
+                Text(
+                    text = point2.toString(),
+                    fontSize = TextFontSize,
+                    fontWeight = FontWeight.Bold,
+                    color = Point2TextColor
+                )
             }
         }
     }
 }
 
-@Preview
+@Preview(widthDp = 64, heightDp = 64)
 @Composable
 fun DisabledScoreCellPreview(){
     val modifier = Modifier.aspectRatio(1f)
@@ -122,7 +113,7 @@ fun DisabledScoreCellPreview(){
     DisabledScoreCell(modifier)
 }
 
-@Preview
+@Preview(widthDp = 64, heightDp = 64)
 @Composable
 fun DualScoreCellPreview(){
     val modifier = Modifier.aspectRatio(1f)
@@ -134,7 +125,7 @@ fun DualScoreCellPreview(){
     )
 }
 
-@Preview
+@Preview(widthDp = 64, heightDp = 64)
 @Composable
 fun SingleScoreCellPreview(){
     val modifier = Modifier.aspectRatio(1f)
@@ -145,7 +136,7 @@ fun SingleScoreCellPreview(){
     )
 }
 
-@Preview
+@Preview(widthDp = 64, heightDp = 64)
 @Composable
 fun NoScoreCellPreview(){
     val modifier = Modifier.aspectRatio(1f)
