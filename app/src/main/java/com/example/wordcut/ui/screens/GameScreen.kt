@@ -5,7 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,6 +24,8 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.wordcut.ui.components.GameRow
 import com.example.wordcut.ui.models.GameRowModel
@@ -172,25 +179,22 @@ fun GameKeyboard(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             ActionButton(
-                text = "Restart",
-                icon = Icons.Outlined.Refresh,
-                modifier = Modifier.weight(1f),
-                onClick = onRestart
+                text = "Delete",
+                icon = Icons.Outlined.Delete,
+                onClick = onDelete
             )
             ActionButton(
                 text = "Submit",
                 icon = Icons.Outlined.Check,
-                modifier = Modifier.weight(1f),
                 onClick = onSubmit
             )
             ActionButton(
-                text = "Delete",
-                icon = Icons.Outlined.Delete,
-                modifier = Modifier.weight(1f),
-                onClick = onDelete
+                text = "Restart",
+                icon = Icons.Outlined.Refresh,
+                onClick = onRestart
             )
         }
     }
@@ -247,25 +251,35 @@ private fun ActionButton(
     text: String,
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    iconDescription: String = "",
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .height(52.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(Color(0xFF2FB39A))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row {
-            Icon(imageVector = icon, contentDescription = iconDescription)
-            Text(
-                text = text,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+
+        Button(
+            onClick = onClick,
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2FB39A)
+            ),
+            modifier = Modifier.size(56.dp), // bouton carré
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = text
             )
         }
+
+        Spacer(Modifier.height(4.dp))
+
+        Text(
+            text = text,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
