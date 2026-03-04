@@ -16,12 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
@@ -40,12 +38,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.wordcut.R
 import com.example.wordcut.ui.components.GameRow
 import com.example.wordcut.ui.models.GameRowModel
 import com.example.wordcut.ui.models.GameUiState
@@ -106,7 +106,7 @@ fun GameScreenContent(
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(1f)      // prend tout l’espace dispo
+                        .weight(1f)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.TopCenter
                 ) {
@@ -183,7 +183,7 @@ fun GameKeyboard(
         ) {
             ActionButton(
                 text = "Delete",
-                icon = Icons.Outlined.Delete,
+                icon = ImageVector.vectorResource(id = R.drawable.outline_backspace),
                 onClick = onDelete
             )
             ActionButton(
@@ -267,7 +267,7 @@ private fun ActionButton(
             colors = ButtonDefaults.buttonColors(
                 containerColor = bgColor
             ),
-            modifier = Modifier.size(56.dp), // bouton carré
+            modifier = Modifier.size(56.dp),
             contentPadding = PaddingValues(0.dp)
         ) {
             Icon(
