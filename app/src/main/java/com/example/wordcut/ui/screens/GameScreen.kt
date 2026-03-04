@@ -1,17 +1,39 @@
 package com.example.wordcut.ui.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,16 +46,38 @@ import com.example.wordcut.ui.viewmodels.GameViewModel
 @Composable
 fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = viewModel()) {
     val gameUiState by gameViewModel.uiState.collectAsState()
-    GameScreenContent(uiState = gameUiState, modifier = modifier)
+
+    GameScreenContent(
+        uiState = gameUiState,
+        onRestart = { gameViewModel.resetGame() },
+        onDelete = { gameViewModel.delete() },
+        onSubmit = { gameViewModel.submitWord() },
+        onKeyPressed = { gameViewModel.typeLetter(it) },
+        modifier = modifier
+    )
 }
 
 @Composable
 fun GameScreenContent(
     modifier: Modifier = Modifier,
-    uiState: GameUiState = GameUiState()
+    uiState: GameUiState = GameUiState(),
+    onDelete: () -> Unit = {},
+    onSubmit: () -> Unit = {},
+    onRestart: () -> Unit = {},
+    onKeyPressed: (Char) -> Unit = {}
 ) {
     Scaffold (
         modifier = modifier.fillMaxSize(),
+        topBar = { GameTopBar(title = "WORDCUT") },
+        bottomBar = {
+            GameKeyboard(
+                letters = uiState.availableLetters,
+                onKeyPressed = onKeyPressed,
+                onRestart = onRestart,
+                onSubmit = onSubmit,
+                onDelete = onDelete
+            )
+        }
     ) { innerPadding ->
         if (uiState.rows.isEmpty()) {
             Box (
@@ -54,7 +98,114 @@ fun GameScreenContent(
 }
 
 @Composable
-fun GameLayout(modifier: Modifier = Modifier, rows: List<GameRowModel> = emptyList()) {
+fun GameTopBar(
+    title: String,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .height(64.dp)
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = {}) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+            Text(
+                text = title.uppercase(),
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(onClick = {}) {
+                Icon(Icons.Outlined.Info, contentDescription = "Hint")
+            }
+        }
+    }
+}
+
+@Composable
+fun GameKeyboard(
+    letters: List<Char>,
+    onKeyPressed: (Char) -> Unit,
+    onRestart: () -> Unit,
+    onDelete: () -> Unit,
+    onSubmit: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            letters.forEach { character ->
+                KeyButton(
+                    text = character.toString(),
+                    modifier = Modifier.weight(1f),
+                    onClick = { onKeyPressed(character) }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            ActionButton(
+                text = "Restart",
+                icon = Icons.Outlined.Refresh,
+                modifier = Modifier.weight(1f),
+                onClick = onRestart
+            )
+            ActionButton(
+                text = "Submit",
+                icon = Icons.Outlined.Check,
+                modifier = Modifier.weight(1f),
+                onClick = onSubmit
+            )
+            ActionButton(
+                text = "Delete",
+                icon = Icons.Outlined.Delete,
+                modifier = Modifier.weight(1f),
+                onClick = onDelete
+            )
+        }
+    }
+}
+
+@Composable
+private fun KeyButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .aspectRatio(1f)
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFFE45555))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+fun GameLayout(
+    modifier: Modifier = Modifier,
+    rows: List<GameRowModel> = emptyList()
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -63,6 +214,33 @@ fun GameLayout(modifier: Modifier = Modifier, rows: List<GameRowModel> = emptyLi
     ){
         for (row in rows) {
             GameRow(row)
+        }
+    }
+}
+
+@Composable
+private fun ActionButton(
+    text: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+    iconDescription: String = "",
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .height(52.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color(0xFF2FB39A))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Row {
+            Icon(imageVector = icon, contentDescription = iconDescription)
+            Text(
+                text = text,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
         }
     }
 }
@@ -111,23 +289,6 @@ private fun buildDemoRows(): List<GameRowModel> {
     )
 }
 
-
-@Preview
-@Composable
-fun IncompleteGameLayoutPreview() {
-    GameLayout(rows = buildDemoRows())
-}
-
-@Preview
-@Composable
-fun EmptyGamePreview() {
-    GameScreenContent(
-        uiState = GameUiState(
-            rows = emptyList()
-        )
-    )
-}
-
 @Preview(
     name = "Phone Preview",
     showBackground = true,
@@ -140,8 +301,9 @@ fun GameScreenPhonePreview() {
     WordCutTheme {
         GameScreenContent(
             uiState = GameUiState(
-                word = "Matelas",
-                currentRowIndex = 1,
+                word = word,
+                currentRowIndex = 2,
+                availableLetters = "METAL".toList(),
                 rows = buildDemoRows().subList(0, 2) + listOf(
                     GameRowModel(
                         letters = emptyList(),
@@ -153,4 +315,16 @@ fun GameScreenPhonePreview() {
             )
         )
     }
+}
+
+@Preview
+@Composable
+fun IncompleteGameLayoutPreview() {
+    GameLayout(rows = buildDemoRows())
+}
+
+@Preview
+@Composable
+fun LoadingGamePreview() {
+    GameScreenContent(uiState = GameUiState())
 }

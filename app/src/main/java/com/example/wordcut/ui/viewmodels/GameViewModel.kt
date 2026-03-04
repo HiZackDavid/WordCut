@@ -16,7 +16,8 @@ class GameViewModel: ViewModel() {
         val letters = word.toList()
         _uiState.value = GameUiState(
             word = word,
-            currentRowIndex = 2,
+            currentRowIndex = 1,
+            availableLetters = letters,
             rows = listOf(
                 GameRowModel(
                     letters = letters,
@@ -38,6 +39,12 @@ class GameViewModel: ViewModel() {
     fun pickRandomStartWord(): String {
         return "Matelas"
     }
+
+    fun delete() {}
+
+    fun submitWord() {}
+
+    fun typeLetter(character: Char) {}
 
     init {
         resetGame()
