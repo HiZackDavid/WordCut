@@ -251,6 +251,9 @@ private fun ActionButton(
     text: String,
     icon: ImageVector,
     modifier: Modifier = Modifier,
+    bgColor: Color = Color(0xFF2FB39A),
+    iconColor: Color = Color.White,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit
 ) {
     Column(
@@ -262,14 +265,15 @@ private fun ActionButton(
             onClick = onClick,
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2FB39A)
+                containerColor = bgColor
             ),
             modifier = Modifier.size(56.dp), // bouton carré
             contentPadding = PaddingValues(0.dp)
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = text
+                contentDescription = text,
+                tint = iconColor
             )
         }
 
@@ -278,7 +282,7 @@ private fun ActionButton(
         Text(
             text = text,
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurface
+            color = textColor
         )
     }
 }
