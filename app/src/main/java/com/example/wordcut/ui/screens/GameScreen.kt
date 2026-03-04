@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -68,6 +70,7 @@ fun GameScreenContent(
 ) {
     Scaffold (
         modifier = modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.safeDrawing,
         topBar = { GameTopBar(title = "WORDCUT") },
         bottomBar = {
             GameKeyboard(
@@ -89,10 +92,24 @@ fun GameScreenContent(
                 Text("Loading...")
             }
         } else {
-            GameLayout(
-                modifier = modifier.padding(innerPadding),
-                rows = uiState.rows
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)      // prend tout l’espace dispo
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    GameLayout(
+                        modifier = modifier.padding(innerPadding),
+                        rows = uiState.rows,
+                        activeRowIndex = uiState.currentRowIndex
+                    )
+                }
+            }
         }
     }
 }
@@ -203,6 +220,7 @@ private fun KeyButton(
 
 @Composable
 fun GameLayout(
+    activeRowIndex: Int,
     modifier: Modifier = Modifier,
     rows: List<GameRowModel> = emptyList()
 ) {
@@ -212,8 +230,14 @@ fun GameLayout(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ){
-        for (row in rows) {
-            GameRow(row)
+        rows.forEachIndexed { index, row ->
+            val isActive = (index == activeRowIndex && !row.hasCommitted)
+            val cursorIndex = if (isActive) row.letters.size else -1
+            GameRow(
+                row = row,
+                isActive = isActive,
+                cursorIndex =cursorIndex
+            )
         }
     }
 }
@@ -306,7 +330,7 @@ fun GameScreenPhonePreview() {
                 availableLetters = "METAL".toList(),
                 rows = buildDemoRows().subList(0, 2) + listOf(
                     GameRowModel(
-                        letters = emptyList(),
+                        letters = "ME".toList(),
                         nbCells = letters.size,
                         nbActiveCells = letters.size-3,
                         hasCommitted = false
@@ -320,7 +344,7 @@ fun GameScreenPhonePreview() {
 @Preview
 @Composable
 fun IncompleteGameLayoutPreview() {
-    GameLayout(rows = buildDemoRows())
+    GameLayout(rows = buildDemoRows(), activeRowIndex = 4)
 }
 
 @Preview

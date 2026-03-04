@@ -1,11 +1,15 @@
 package com.example.wordcut.ui.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.wordcut.ui.components.cells.CommittedCell
@@ -16,7 +20,12 @@ import com.example.wordcut.ui.components.cells.WriteCell
 import com.example.wordcut.ui.models.GameRowModel
 
 @Composable
-fun GameRow(row: GameRowModel, modifier: Modifier = Modifier) {
+fun GameRow(
+    row: GameRowModel,
+    isActive: Boolean,
+    cursorIndex: Int,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -26,16 +35,30 @@ fun GameRow(row: GameRowModel, modifier: Modifier = Modifier) {
             .aspectRatio(1f)
 
         for (i in 0 until row.nbCells) {
+            val highlight = isActive
+                    && i == cursorIndex
+                    && !row.hasCommitted
+                    && i < row.nbActiveCells
+            val highlightColor = Color.Black
+
+            val finalCellModifier = cellModifier.then(
+                if (highlight) Modifier.border(
+                    2.dp,
+                    highlightColor,
+                    RoundedCornerShape(12.dp)
+                ) else Modifier
+            )
+
             when {
                 i >= row.nbActiveCells ->
                     DisabledCell(cellModifier)
                 row.hasCommitted && i < row.letters.size ->
-                    CommittedCell(row.letters[i], cellModifier)
+                    CommittedCell(row.letters[i], finalCellModifier)
                 !row.hasCommitted && i < row.letters.size ->
-                    WriteCell(letter = row.letters[i], modifier = cellModifier)
+                    WriteCell(letter = row.letters[i], modifier = finalCellModifier)
                 !row.hasCommitted && i < row.nbActiveCells ->
-                    WriteCell(modifier = cellModifier)
-                else -> DisabledCell(cellModifier)
+                    WriteCell(modifier = finalCellModifier)
+                else -> DisabledCell(finalCellModifier)
             }
         }
 
@@ -80,7 +103,7 @@ private object DemoRows {
     val playableRow = GameRowModel(
         letters = "M".toList(),
         nbCells = letters.size,
-        nbActiveCells = letters.size-5,
+        nbActiveCells = letters.size-2,
         hasCommitted = false
     )
 }
@@ -88,23 +111,23 @@ private object DemoRows {
 @Preview
 @Composable
 fun FirstRowPreview() {
-   GameRow(DemoRows.firstRow)
+   GameRow(DemoRows.firstRow, isActive = false, cursorIndex = DemoRows.firstRow.letters.lastIndex)
 }
 
 @Preview
 @Composable
 fun DualScorePreview() {
-    GameRow(DemoRows.dualScore)
+    GameRow(DemoRows.dualScore, isActive = false, cursorIndex = DemoRows.dualScore.letters.lastIndex)
 }
 
 @Preview
 @Composable
 fun SingleScorePreview() {
-    GameRow(DemoRows.singleScore)
+    GameRow(DemoRows.singleScore, isActive = false, cursorIndex = DemoRows.firstRow.letters.lastIndex)
 }
 
 @Preview
 @Composable
 fun PlayablePreview() {
-    GameRow(DemoRows.playableRow)
+    GameRow(DemoRows.playableRow, isActive = true, cursorIndex = 1, )
 }
