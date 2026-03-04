@@ -35,30 +35,21 @@ fun GameRow(
             .aspectRatio(1f)
 
         for (i in 0 until row.nbCells) {
-            val highlight = isActive
+            val isHighlighted = isActive
                     && i == cursorIndex
                     && !row.hasCommitted
                     && i < row.nbActiveCells
-            val highlightColor = Color.Black
-
-            val finalCellModifier = cellModifier.then(
-                if (highlight) Modifier.border(
-                    2.dp,
-                    highlightColor,
-                    RoundedCornerShape(12.dp)
-                ) else Modifier
-            )
 
             when {
                 i >= row.nbActiveCells ->
                     DisabledCell(cellModifier)
                 row.hasCommitted && i < row.letters.size ->
-                    CommittedCell(row.letters[i], finalCellModifier)
+                    CommittedCell(row.letters[i], cellModifier)
                 !row.hasCommitted && i < row.letters.size ->
-                    WriteCell(letter = row.letters[i], modifier = finalCellModifier)
+                    WriteCell(letter = row.letters[i], isHighlighted = isHighlighted, modifier = cellModifier)
                 !row.hasCommitted && i < row.nbActiveCells ->
-                    WriteCell(modifier = finalCellModifier)
-                else -> DisabledCell(finalCellModifier)
+                    WriteCell(isHighlighted = isHighlighted, modifier = cellModifier)
+                else -> DisabledCell(cellModifier)
             }
         }
 

@@ -15,13 +15,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+private val TextFontSize = 20.sp
+private val CellBorderSize = 4.dp
+private val DisabledBgColor = Color(0xFFa4aec4)
+private val CommittedBgColor = Color(0xFF79b851)
+private val CommittedTextColor = Color.White
+private val WriteCellBorderColor = CommittedBgColor
+private val WriteCellTextColor = CommittedBgColor
+private val WriteCellEmptyBorderColor = Color(0xFFE5E1E1)
+private val WriteCellHighlightedBorderColor = CommittedBgColor
+private val WriteCellHighlightBorderWidth = 1.dp
+
 @Composable
 fun DisabledCell(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .background(
-                color = Color.Gray,
-                shape = RoundedCornerShape(size = 12.dp)
+                color = DisabledBgColor,
+                shape = RoundedCornerShape(CellBorderSize)
             ),
         contentAlignment = Alignment.Center
     ) {}
@@ -32,45 +43,50 @@ fun CommittedCell(letter: Char, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .background(
-                color = Color(0xFF2FB39A),
-                shape = RoundedCornerShape(size = 12.dp)
+                color = CommittedBgColor,
+                shape = RoundedCornerShape(CellBorderSize)
             ),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = letter.toString(),
-            fontSize = 20.sp,
+            fontSize = TextFontSize,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF0B3B33)
+            color = CommittedTextColor
         )
     }
 }
 
 @Composable
-fun WriteCell(modifier: Modifier = Modifier, letter: Char? = null) {
+fun WriteCell(modifier: Modifier = Modifier, letter: Char? = null, isHighlighted: Boolean = false) {
+    val borderColor = when {
+        isHighlighted -> WriteCellHighlightedBorderColor
+        letter == null -> WriteCellEmptyBorderColor
+        else -> WriteCellBorderColor
+    }
     Box(
         modifier = modifier
             .background(
                 color = Color.White,
-                shape = RoundedCornerShape(size = 12.dp)
+                shape = RoundedCornerShape(CellBorderSize)
             )
             .border(
-                width = 2.dp,
-                color = if (letter == null) Color(0xFFE5E1E1) else Color(0xFF2FB39A),
-                shape = RoundedCornerShape(size = 12.dp)
+                width = WriteCellHighlightBorderWidth,
+                color = borderColor,
+                shape = RoundedCornerShape(CellBorderSize)
             ),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = letter?.toString() ?: "",
-            fontSize = 20.sp,
+            fontSize = TextFontSize,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF2FB39A)
+            color = WriteCellTextColor
         )
     }
 }
 
-@Preview
+@Preview(widthDp = 64, heightDp = 64)
 @Composable
 fun DisabledCellPreview(){
     val modifier = Modifier.aspectRatio(1f)
@@ -78,7 +94,7 @@ fun DisabledCellPreview(){
     DisabledCell(modifier)
 }
 
-@Preview
+@Preview(widthDp = 64, heightDp = 64)
 @Composable
 fun CommittedCellPreview(){
     val letter = 'I'
@@ -90,7 +106,7 @@ fun CommittedCellPreview(){
     )
 }
 
-@Preview
+@Preview(widthDp = 64, heightDp = 64)
 @Composable
 fun WriteCellPreview() {
     val letter = 'I'
@@ -102,7 +118,18 @@ fun WriteCellPreview() {
     )
 }
 
-@Preview
+@Preview(widthDp = 64, heightDp = 64)
+@Composable
+fun WriteCellHighlightedPreview() {
+    val modifier = Modifier.aspectRatio(1f)
+
+    WriteCell(
+        isHighlighted = true,
+        modifier = modifier
+    )
+}
+
+@Preview(widthDp = 64, heightDp = 64)
 @Composable
 fun EmptyWriteCellPreview() {
     val modifier = Modifier.aspectRatio(1f)
