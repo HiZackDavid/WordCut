@@ -50,10 +50,6 @@ private val KeyEnabledTextColor = Color(0xFF5A6376)
 private val KeyAvailableBgColor = Color(0xFF79B851)
 private val KeyAvailableTextColor = Color.White
 
-private val BadgeBgColor = Color(0xFF4267B2)
-private val BadgeTextColor = Color.White
-private val BadgeSize = 22.dp
-
 private enum class KeyState { Disabled, Enabled, Available }
 
 @Composable
