@@ -14,10 +14,11 @@ class GameViewModel: ViewModel() {
     fun resetGame() {
         val word = pickRandomStartWord().uppercase()
         val letters = word.toList()
+        val counts = letters.groupingBy { it }.eachCount()
         _uiState.value = GameUiState(
             word = word,
             currentRowIndex = 1,
-            availableLetters = letters,
+            availableLetterCounts = counts,
             rows = listOf(
                 GameRowModel(
                     letters = letters,

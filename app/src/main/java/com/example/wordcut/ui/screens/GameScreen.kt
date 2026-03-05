@@ -1,29 +1,17 @@
 package com.example.wordcut.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,18 +23,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.wordcut.R
-import com.example.wordcut.ui.components.GameRow
+import com.example.wordcut.ui.layouts.KeyboardLayout
+import com.example.wordcut.ui.layouts.GameLayout
 import com.example.wordcut.ui.models.GameRowModel
 import com.example.wordcut.ui.models.GameUiState
 import com.example.wordcut.ui.theme.WordCutTheme
@@ -80,8 +62,8 @@ fun GameScreenContent(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = { GameTopBar(title = "WORDCUT") },
         bottomBar = {
-            GameKeyboard(
-                letters = uiState.availableLetters,
+            KeyboardLayout (
+                availableLetterCounts = uiState.availableLetterCounts,
                 onKeyPressed = onKeyPressed,
                 onRestart = onRestart,
                 onSubmit = onSubmit,
@@ -150,143 +132,6 @@ fun GameTopBar(
     }
 }
 
-@Composable
-fun GameKeyboard(
-    letters: List<Char>,
-    onKeyPressed: (Char) -> Unit,
-    onRestart: () -> Unit,
-    onDelete: () -> Unit,
-    onSubmit: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            letters.forEach { character ->
-                KeyButton(
-                    text = character.toString(),
-                    modifier = Modifier.weight(1f),
-                    onClick = { onKeyPressed(character) }
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            ActionButton(
-                text = "Delete",
-                icon = ImageVector.vectorResource(id = R.drawable.outline_backspace),
-                onClick = onDelete
-            )
-            ActionButton(
-                text = "Submit",
-                icon = Icons.Outlined.Check,
-                onClick = onSubmit
-            )
-            ActionButton(
-                text = "Restart",
-                icon = Icons.Outlined.Refresh,
-                onClick = onRestart
-            )
-        }
-    }
-}
-
-@Composable
-private fun KeyButton(
-    text: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(14.dp))
-            .background(Color(0xFFE45555))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
-    }
-}
-
-@Composable
-fun GameLayout(
-    activeRowIndex: Int,
-    modifier: Modifier = Modifier,
-    rows: List<GameRowModel> = emptyList()
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ){
-        rows.forEachIndexed { index, row ->
-            val isActive = (index == activeRowIndex && !row.hasCommitted)
-            val cursorIndex = if (isActive) row.letters.size else -1
-            GameRow(
-                row = row,
-                isActive = isActive,
-                cursorIndex =cursorIndex
-            )
-        }
-    }
-}
-
-@Composable
-private fun ActionButton(
-    text: String,
-    icon: ImageVector,
-    modifier: Modifier = Modifier,
-    bgColor: Color = Color(0xFF2FB39A),
-    iconColor: Color = Color.White,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Button(
-            onClick = onClick,
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = bgColor
-            ),
-            modifier = Modifier.size(56.dp),
-            contentPadding = PaddingValues(0.dp)
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = text,
-                tint = iconColor
-            )
-        }
-
-        Spacer(Modifier.height(4.dp))
-
-        Text(
-            text = text,
-            fontSize = 12.sp,
-            color = textColor
-        )
-    }
-}
-
 private fun buildDemoRows(): List<GameRowModel> {
     val letters: List<Char> = "MATELAS".toList()
     val nbLetters = letters.size
@@ -345,7 +190,10 @@ fun GameScreenPhonePreview() {
             uiState = GameUiState(
                 word = word,
                 currentRowIndex = 2,
-                availableLetters = "METAL".toList(),
+                availableLetterCounts = mapOf(
+                    'M' to 1, 'E' to 1, 'T' to 1,
+                    'A' to 1, 'L' to 1
+                ),
                 rows = buildDemoRows().subList(0, 2) + listOf(
                     GameRowModel(
                         letters = "ME".toList(),
@@ -357,12 +205,6 @@ fun GameScreenPhonePreview() {
             )
         )
     }
-}
-
-@Preview
-@Composable
-fun IncompleteGameLayoutPreview() {
-    GameLayout(rows = buildDemoRows(), activeRowIndex = 4)
 }
 
 @Preview
