@@ -63,7 +63,7 @@ fun GameScreenContent(
         topBar = { GameTopBar(title = "WORDCUT") },
         bottomBar = {
             KeyboardLayout(
-                availableLetterCounts = uiState.availableLetterCounts,
+                availableLetterCounts = uiState.remainingLetterCounts,
                 onKeyPressed = onKeyPressed,
                 onSubmit = onSubmit,
                 onDelete = onDelete
@@ -189,7 +189,7 @@ fun GameScreenPhonePreview() {
             uiState = GameUiState(
                 word = word,
                 currentRowIndex = 2,
-                availableLetterCounts = mapOf(
+                remainingLetterCounts = mapOf(
                     'M' to 1, 'E' to 1, 'T' to 1,
                     'A' to 1, 'L' to 1
                 ),
