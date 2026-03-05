@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 
 private val KEYBOARD_ROWS = listOf(
     "QWERTYUIOP",
@@ -50,6 +52,7 @@ private val KeyAvailableTextColor = Color.White
 
 private val BadgeBgColor = Color(0xFF4267B2)
 private val BadgeTextColor = Color.White
+private val BadgeSize = 22.dp
 
 private enum class KeyState { Disabled, Enabled, Available }
 
@@ -105,7 +108,6 @@ fun KeyboardLayout(
                                 SquareKey(
                                     letter = character.toString(),
                                     state = state,
-                                    count = count,
                                     modifier = Modifier
                                         .height(keySize)
                                         .weight(1f),
@@ -127,14 +129,12 @@ fun KeyboardLayout(
 private fun SquareKey(
     letter: String,
     state: KeyState,
-    count: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     BaseKey(
         text = letter,
         state = state,
-        count = count,
         modifier = modifier.aspectRatio(1f),
         onClick = onClick
     )
@@ -149,7 +149,6 @@ private fun WideKey(
     BaseKey(
         text = text,
         state = KeyState.Enabled,
-        count = 0,
         onClick = onClick,
         modifier = modifier
     )
@@ -159,7 +158,6 @@ private fun WideKey(
 private fun BaseKey(
     text: String,
     state: KeyState,
-    count: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 12.sp
@@ -185,25 +183,6 @@ private fun BaseKey(
                 color = textColor,
                 fontSize = fontSize
             )
-        }
-
-        if (text.length == 1 && count >= 2) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = (4).dp, y = (-8).dp)
-                    .size(18.dp)
-                    .clip(androidx.compose.foundation.shape.CircleShape)
-                    .background(BadgeBgColor),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "x$count",
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = BadgeTextColor
-                )
-            }
         }
     }
 }

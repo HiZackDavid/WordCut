@@ -62,7 +62,7 @@ fun GameScreenContent(
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = { GameTopBar(title = "WORDCUT") },
         bottomBar = {
-            KeyboardLayout (
+            KeyboardLayout(
                 availableLetterCounts = uiState.availableLetterCounts,
                 onKeyPressed = onKeyPressed,
                 onSubmit = onSubmit,
