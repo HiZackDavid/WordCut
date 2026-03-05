@@ -1,96 +1,45 @@
 package com.example.wordcut.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
+import com.example.wordcut.domain.models.GameState
+import com.example.wordcut.domain.usecases.DeleteLetterUseCase
+import com.example.wordcut.domain.usecases.StartGameUseCase
+import com.example.wordcut.domain.usecases.TypeLetterUseCase
 import com.example.wordcut.ui.models.GameUiState
-import com.example.wordcut.ui.models.GameRowModel
+import com.example.wordcut.ui.models.toUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class GameViewModel: ViewModel() {
+    private val startGame = StartGameUseCase()
+    private val typeLetter = TypeLetterUseCase()
+    private val deleteLetter = DeleteLetterUseCase()
+
+    private var domaineState: GameState = startGame(pickRandomStartWord())
+
     private val _uiState = MutableStateFlow(GameUiState())
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
     fun resetGame() {
-        val word = pickRandomStartWord().uppercase()
-        val letters = word.toList()
-        val rows = listOf(
-            GameRowModel(
-                letters = letters,
-                nbCells = letters.size,
-                nbActiveCells = letters.size,
-                hasCommitted = true,
-                isScoreDisabled = true
-            ),
-            GameRowModel(
-                letters = emptyList(),
-                nbCells = letters.size,
-                nbActiveCells = letters.size-1,
-                hasCommitted = false
-            )
-        )
-        val currentRowTypedLetters = rows[1].letters
-
-        _uiState.value = GameUiState(
-            word = word,
-            rows = rows,
-            currentRowIndex = 1,
-            remainingLetterCounts = remainingCounts(word, currentRowTypedLetters),
-        )
+        domaineState = startGame(pickRandomStartWord())
+        _uiState.value = domaineState.toUiState()
     }
 
-    fun pickRandomStartWord(): String {
-        return "Matelas"
-    }
-
-    fun typeLetter(value: Char) {
-        val state = _uiState.value
-        val rowIndex = state.currentRowIndex
-        val rows = state.rows.toMutableList()
-        val row = rows[rowIndex]
-
-        val letter = value.uppercaseChar()
-        val remaining = state.remainingLetterCounts[letter] ?: 0
-
-        if (remaining <= 0) return
-        if (row.letters.size >= row.nbActiveCells) return
-
-        val newLetters = row.letters + letter
-        rows[rowIndex] = row.copy(letters = newLetters)
-
-        _uiState.value = state.copy(
-            rows = rows,
-            remainingLetterCounts = remainingCounts(state.word, newLetters)
-        )
+    fun typeLetter(rawCharacter: Char) {
+        domaineState = typeLetter(domaineState, rawCharacter)
+        _uiState.value = domaineState.toUiState()
     }
 
     fun delete() {
-        val state = _uiState.value
-        val rowIndex = state.currentRowIndex
-        val rows = state.rows.toMutableList()
-        val row = rows[rowIndex]
-
-        val newLetters = row.letters.dropLast(1)
-        rows[rowIndex] = row.copy(letters = newLetters)
-
-        _uiState.value = state.copy(
-            rows = rows,
-            remainingLetterCounts = remainingCounts(state.word, newLetters)
-        )
+        domaineState = deleteLetter(domaineState)
+        _uiState.value = domaineState.toUiState()
     }
 
     fun submitWord() {}
 
-    private fun countsOf(letters: List<Char>): Map<Char, Int> =
-        letters.groupingBy { it }.eachCount()
-
-    private fun remainingCounts(word: String, typed: List<Char>): Map<Char, Int> {
-        val start = countsOf(word.uppercase().toList())
-        val used = countsOf(typed.map { it.uppercaseChar() })
-
-        return start.mapValues { (c, total) ->
-            (total - (used[c] ?: 0)).coerceAtLeast(0)
-        }
+    fun pickRandomStartWord(): String {
+        return "Matelas"
     }
 
     init {
