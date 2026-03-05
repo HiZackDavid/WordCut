@@ -4,12 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -28,13 +34,22 @@ private val KEYBOARD_ROWS = listOf(
     "⌫ZXCVBNM⏎"
 )
 
-private val KeyCornerSize = 4.dp
+private val KeySpacing = 4.dp
+private val KeyRowSpacing = 4.dp
+private val KeyboardPadding = 8.dp
+private val KeyCornerSize = 2.dp
+
 private val KeyDisabledBgColor = Color(0xFFA4AEC4)
 private val KeyDisabledTextColor = Color.White
+
 private val KeyEnabledBgColor = Color(0xFFDCE1ED)
 private val KeyEnabledTextColor = Color(0xFF5A6376)
+
 private val KeyAvailableBgColor = Color(0xFF79B851)
 private val KeyAvailableTextColor = Color.White
+
+private val BadgeBgColor = Color(0xFF4267B2)
+private val BadgeTextColor = Color.White
 
 private enum class KeyState { Disabled, Enabled, Available }
 
@@ -42,74 +57,112 @@ private enum class KeyState { Disabled, Enabled, Available }
 fun KeyboardLayout(
     availableLetterCounts: Map<Char, Int>,
     onKeyPressed: (Char) -> Unit,
-    onRestart: () -> Unit,
     onDelete: () -> Unit,
     onSubmit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(KeyboardPadding)
     ) {
-        KEYBOARD_ROWS.forEachIndexed { rowIndex, row ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                if (rowIndex == 1) Spacer(Modifier.weight(0.5f))
+        val keySize = ((maxWidth - KeySpacing * 9) / 10f)
 
-                row.forEach { character ->
-                    when (character) {
-                        '⌫' -> {
-                            KeyboardKey(
-                                text = "⌫",
-                                state = KeyState.Enabled,
-                                onClick = onDelete,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        '⏎' -> {
-                            KeyboardKey(
-                                text = "Enter",
-                                state = KeyState.Enabled,
-                                onClick = onSubmit,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        else -> {
-                            val count = availableLetterCounts[character] ?: 0
-                            val state = when {
-                                count >= 1 -> KeyState.Available
-                                else -> KeyState.Disabled
+        Column(verticalArrangement = Arrangement.spacedBy(KeyRowSpacing)) {
+            KEYBOARD_ROWS.forEachIndexed { rowIndex, row ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(KeySpacing),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (rowIndex == 1) Spacer(Modifier.width(keySize / 2f))
+
+                    row.forEach { character ->
+                        when (character) {
+                            '⌫' -> {
+                                WideKey(
+                                    text = "⌫",
+                                    onClick = onDelete,
+                                    modifier = Modifier
+                                        .height(keySize)
+                                        .weight(1.5f)
+                                )
                             }
+                            '⏎' -> {
+                                WideKey(
+                                    text = "Enter",
+                                    onClick = onSubmit,
+                                    modifier = Modifier
+                                        .height(keySize)
+                                        .weight(1.5f)
+                                )
+                            }
+                            else -> {
+                                val count = availableLetterCounts[character] ?: 0
+                                val state =
+                                    if (count >= 1) KeyState.Available else KeyState.Disabled
 
-                            KeyboardKey(
-                                text = character.toString(),
-                                state = state,
-                                count = count,
-                                modifier = Modifier.weight(1f),
-                                onClick = { onKeyPressed(character) }
-                            )
+                                SquareKey(
+                                    letter = character.toString(),
+                                    state = state,
+                                    count = count,
+                                    modifier = Modifier
+                                        .height(keySize)
+                                        .weight(1f),
+                                    onClick = { onKeyPressed(character) }
+                                )
+                            }
                         }
                     }
+
+                    if (rowIndex == 1) Spacer(Modifier.width(keySize / 2f))
                 }
 
-                if (rowIndex == 1) Spacer(Modifier.weight(0.5f))
             }
-
         }
     }
 }
 
 @Composable
-private fun KeyboardKey(
+private fun SquareKey(
+    letter: String,
+    state: KeyState,
+    count: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    BaseKey(
+        text = letter,
+        state = state,
+        count = count,
+        modifier = modifier.aspectRatio(1f),
+        onClick = onClick
+    )
+}
+
+@Composable
+private fun WideKey(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    BaseKey(
+        text = text,
+        state = KeyState.Enabled,
+        count = 0,
+        onClick = onClick,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun BaseKey(
     text: String,
     state: KeyState,
+    count: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    count: Int = 0,
-    onClick: () -> Unit
+    fontSize: TextUnit = 12.sp
 ) {
     val (backgroundColor, textColor, clickable) = when (state) {
         KeyState.Disabled -> Triple(KeyDisabledBgColor, KeyDisabledTextColor, false)
@@ -117,31 +170,40 @@ private fun KeyboardKey(
         KeyState.Available -> Triple(KeyAvailableBgColor, KeyAvailableTextColor, true)
     }
 
-    Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(KeyCornerSize))
-            .background(backgroundColor)
-            .clickable(enabled = clickable, onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            color = textColor,
-            fontSize = 14.sp
-        )
+    Box(modifier = modifier) {
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clip(RoundedCornerShape(KeyCornerSize))
+                .background(backgroundColor)
+                .clickable(enabled = clickable, onClick = onClick),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                fontWeight = FontWeight.Bold,
+                color = textColor,
+                fontSize = fontSize
+            )
+        }
 
         if (text.length == 1 && count >= 2) {
-            Text(
-                text = "x$count",
+            Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(6.dp),
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold,
-                color = textColor.copy(alpha = 0.95f)
-            )
+                    .offset(x = (4).dp, y = (-8).dp)
+                    .size(18.dp)
+                    .clip(androidx.compose.foundation.shape.CircleShape)
+                    .background(BadgeBgColor),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "x$count",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = BadgeTextColor
+                )
+            }
         }
     }
 }
@@ -152,7 +214,6 @@ fun KeyboardLayoutPreview(){
     KeyboardLayout(
         availableLetterCounts = emptyMap(),
         onKeyPressed = {},
-        onRestart = {},
         onDelete = {},
         onSubmit = {}
     )
@@ -168,7 +229,6 @@ fun KeyboardLayoutWithTextPreview(){
     KeyboardLayout(
         availableLetterCounts = counts,
         onKeyPressed = {},
-        onRestart = {},
         onDelete = {},
         onSubmit = {}
     )

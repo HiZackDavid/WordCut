@@ -65,7 +65,6 @@ fun GameScreenContent(
             KeyboardLayout (
                 availableLetterCounts = uiState.availableLetterCounts,
                 onKeyPressed = onKeyPressed,
-                onRestart = onRestart,
                 onSubmit = onSubmit,
                 onDelete = onDelete
             )
