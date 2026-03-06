@@ -7,22 +7,25 @@ import com.example.wordcut.domain.usecases.StartGameUseCase
 import com.example.wordcut.domain.usecases.TypeLetterUseCase
 import com.example.wordcut.ui.models.GameUiState
 import com.example.wordcut.ui.models.toUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class GameViewModel: ViewModel() {
-    private val startGame = StartGameUseCase()
-    private val typeLetter = TypeLetterUseCase()
-    private val deleteLetter = DeleteLetterUseCase()
-
-    private var domaineState: GameState = startGame(pickRandomStartWord())
+@HiltViewModel
+class GameViewModel @Inject constructor(
+    private val startGame: StartGameUseCase,
+    private val typeLetter: TypeLetterUseCase,
+    private val deleteLetter: DeleteLetterUseCase,
+): ViewModel() {
+    private lateinit var domaineState: GameState
 
     private val _uiState = MutableStateFlow(GameUiState())
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
     fun resetGame() {
-        domaineState = startGame(pickRandomStartWord())
+        domaineState = startGame()
         _uiState.value = domaineState.toUiState()
     }
 

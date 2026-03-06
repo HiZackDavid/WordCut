@@ -1,12 +1,15 @@
 package com.example.wordcut.domain.usecases
 
+import com.example.wordcut.domain.repositories.WordRepository
 import com.example.wordcut.domain.models.GameRow
 import com.example.wordcut.domain.models.GameState
 import com.example.wordcut.domain.utils.remainingLetterCounts
 
-class StartGameUseCase {
-    operator fun invoke(rawWord: String): GameState {
-        val word = rawWord.uppercase()
+class StartGameUseCase(
+    private val wordRepository: WordRepository
+) {
+    operator fun invoke(): GameState {
+        val word = wordRepository.getRandomWord().uppercase()
         val rows = listOf(
             GameRow(
                 letters = word.toList(),

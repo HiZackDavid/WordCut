@@ -26,16 +26,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.wordcut.ui.layouts.KeyboardLayout
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.wordcut.ui.layouts.GameLayout
+import com.example.wordcut.ui.layouts.KeyboardLayout
 import com.example.wordcut.ui.models.GameRowModel
 import com.example.wordcut.ui.models.GameUiState
 import com.example.wordcut.ui.theme.WordCutTheme
 import com.example.wordcut.ui.viewmodels.GameViewModel
 
 @Composable
-fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = viewModel()) {
+fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = hiltViewModel()) {
     val gameUiState by gameViewModel.uiState.collectAsState()
 
     GameScreenContent(
