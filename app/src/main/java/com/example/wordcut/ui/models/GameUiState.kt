@@ -5,4 +5,6 @@ data class GameUiState(
     val rows: List<GameRowModel> = emptyList(),
     val remainingLetterCounts: Map<Char, Int> = emptyMap(),
     val currentRowIndex: Int = 0,
+    val remainingTimeSeconds: Int = 0,
+    val isTimeUp: Boolean = false
 )
