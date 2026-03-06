@@ -10,24 +10,28 @@ class StartGameUseCase(
 ) {
     operator fun invoke(): GameState {
         val word = wordRepository.getRandomWord().uppercase()
+        val letters = word.toList()
+
         val rows = listOf(
             GameRow(
-                letters = word.toList(),
-                maxActiveLetters = word.length,
+                letters = letters,
+                maxActiveLetters = letters.size,
                 committed = true
             ),
             GameRow(
                 letters = emptyList(),
-                maxActiveLetters = word.length - 1,
+                maxActiveLetters = (letters.size - 1).coerceAtLeast(0),
                 committed = false
             )
         )
 
         return GameState(
-            word = word,
+            startWord = word,
+            activeWord = word,
             rows = rows,
             currentRowIndex = 1,
-            remainingLetterCounts = remainingLetterCounts(word, rows[1].letters)
+            remainingLetterCounts = remainingLetterCounts(word, emptyList()),
+            isGameOver = false
         )
     }
 }

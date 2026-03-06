@@ -1,9 +1,11 @@
 package com.example.wordcut.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.wordcut.domain.models.GameState
 import com.example.wordcut.domain.usecases.DeleteLetterUseCase
 import com.example.wordcut.domain.usecases.StartGameUseCase
+import com.example.wordcut.domain.usecases.SubmitWordUseCase
 import com.example.wordcut.domain.usecases.TypeLetterUseCase
 import com.example.wordcut.ui.models.GameUiState
 import com.example.wordcut.ui.models.toUiState
@@ -18,6 +20,7 @@ class GameViewModel @Inject constructor(
     private val startGame: StartGameUseCase,
     private val typeLetter: TypeLetterUseCase,
     private val deleteLetter: DeleteLetterUseCase,
+    private val submitWord: SubmitWordUseCase
 ): ViewModel() {
     private lateinit var domaineState: GameState
 
@@ -39,10 +42,9 @@ class GameViewModel @Inject constructor(
         _uiState.value = domaineState.toUiState()
     }
 
-    fun submitWord() {}
-
-    fun pickRandomStartWord(): String {
-        return "Matelas"
+    fun submitWord() {
+        domaineState = submitWord(domaineState)
+        _uiState.value = domaineState.toUiState()
     }
 
     init {

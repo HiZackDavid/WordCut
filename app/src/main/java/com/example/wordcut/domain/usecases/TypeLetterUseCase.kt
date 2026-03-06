@@ -5,6 +5,8 @@ import com.example.wordcut.domain.utils.remainingLetterCounts
 
 class TypeLetterUseCase {
     operator fun invoke(state: GameState, rawCharacter: Char): GameState {
+        if (state.isGameOver) return state
+
         val letter = rawCharacter.uppercaseChar()
 
         val remaining = state.remainingLetterCounts[letter] ?: 0
@@ -20,7 +22,7 @@ class TypeLetterUseCase {
 
         return state.copy(
             rows = updatedRows,
-            remainingLetterCounts = remainingLetterCounts(state.word, updatedRow.letters)
+            remainingLetterCounts = remainingLetterCounts(state.activeWord, updatedRow.letters)
         )
     }
 }

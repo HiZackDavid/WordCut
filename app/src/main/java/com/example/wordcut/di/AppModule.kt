@@ -1,10 +1,11 @@
 package com.example.wordcut.di
 
 import com.example.wordcut.data.datasources.LocalWordDataSource
-import com.example.wordcut.data.repositories.FakeWordRepository
+import com.example.wordcut.data.repositories.LocalWordRepository
 import com.example.wordcut.domain.repositories.WordRepository
 import com.example.wordcut.domain.usecases.DeleteLetterUseCase
 import com.example.wordcut.domain.usecases.StartGameUseCase
+import com.example.wordcut.domain.usecases.SubmitWordUseCase
 import com.example.wordcut.domain.usecases.TypeLetterUseCase
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,7 @@ object AppModule {
 
     @Provides @Singleton
     fun provideWordRepository(local: LocalWordDataSource): WordRepository =
-        FakeWordRepository(local)
+        LocalWordRepository(local)
 
     @Provides
     fun provideStartGameUseCase(repo: WordRepository): StartGameUseCase =
@@ -31,4 +32,9 @@ object AppModule {
 
     @Provides
     fun provideDeleteLetterUseCase(): DeleteLetterUseCase = DeleteLetterUseCase()
+
+    @Provides
+    fun provideSubmitWordUseCase(repo: WordRepository): SubmitWordUseCase =
+        SubmitWordUseCase(repo)
+
 }

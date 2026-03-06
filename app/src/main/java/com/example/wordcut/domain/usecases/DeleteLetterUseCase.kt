@@ -5,6 +5,8 @@ import com.example.wordcut.domain.utils.remainingLetterCounts
 
 class DeleteLetterUseCase {
     operator fun invoke(state: GameState): GameState {
+        if (state.isGameOver) return state
+
         val rowIndex = state.currentRowIndex
         val row = state.rows[rowIndex]
         if (row.committed) return state
@@ -15,7 +17,7 @@ class DeleteLetterUseCase {
 
         return state.copy(
             rows = updatedRows,
-            remainingLetterCounts = remainingLetterCounts(state.word, updatedRow.letters)
+            remainingLetterCounts = remainingLetterCounts(state.activeWord, updatedRow.letters)
         )
     }
 }
