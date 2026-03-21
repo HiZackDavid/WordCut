@@ -33,17 +33,22 @@ class GameViewModel @Inject constructor(
     private var countdown: Job? = null
     private var gameDurationSeconds = 120
 
+    private var selectedDictionaryId: String = "francais.txt"
+
     fun resetGame() {
-        domaineState = startGame()
-        _uiState.value = domaineState.toUiState().copy(
-            remainingTimeSeconds = gameDurationSeconds,
-            isTimeUp = false
-        )
-        startTimer()
+        viewModelScope.launch {
+            domaineState = startGame(selectedDictionaryId)
+            _uiState.value = domaineState.toUiState().copy(
+                remainingTimeSeconds = gameDurationSeconds,
+                isTimeUp = false
+            )
+            startTimer()
+        }
     }
 
     fun typeLetter(rawCharacter: Char) {
         if (_uiState.value.isTimeUp) return
+        if (!::domaineState.isInitialized) return
 
         domaineState = typeLetter(domaineState, rawCharacter)
         updateUiState()
@@ -51,6 +56,7 @@ class GameViewModel @Inject constructor(
 
     fun delete() {
         if (_uiState.value.isTimeUp) return
+        if (!::domaineState.isInitialized) return
 
         domaineState = deleteLetter(domaineState)
         updateUiState()
@@ -58,9 +64,15 @@ class GameViewModel @Inject constructor(
 
     fun submitWord() {
         if (_uiState.value.isTimeUp) return
+        if (!::domaineState.isInitialized) return
 
-        domaineState = submitWord(domaineState)
-        updateUiState()
+        viewModelScope.launch {
+            domaineState = submitWord(
+                state = domaineState,
+                dictionaryId = selectedDictionaryId
+            )
+            updateUiState()
+        }
     }
 
     private fun startTimer() {
@@ -68,7 +80,7 @@ class GameViewModel @Inject constructor(
 
         countdown = viewModelScope.launch {
             while (_uiState.value.remainingTimeSeconds > 0) {
-                delay(1000)
+                delay(1000) // 1 second
                 val current = _uiState.value
                 val next = current.remainingTimeSeconds - 1
 
