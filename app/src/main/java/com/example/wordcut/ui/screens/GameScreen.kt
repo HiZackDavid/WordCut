@@ -99,7 +99,6 @@ fun GameScreenContent(
                     contentAlignment = Alignment.TopCenter
                 ) {
                     GameLayout(
-                        modifier = modifier.padding(innerPadding),
                         rows = uiState.rows,
                         activeRowIndex = uiState.currentRowIndex
                     )
