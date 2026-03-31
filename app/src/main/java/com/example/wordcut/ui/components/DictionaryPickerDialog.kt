@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.wordcut.domain.models.Dictionary
 import com.example.wordcut.domain.models.DictionarySource
+import com.example.wordcut.ui.theme.WordCutTheme
 
 @Composable
 fun DictionaryPickerDialog (
@@ -61,20 +62,28 @@ fun DictionaryPickerDialog (
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun DictionaryPickerDialogPreview () {
-    DictionaryPickerDialog(
-        dictionaries = listOf(
-            Dictionary(
-                id = "francais.txt",
-                displayName = "French",
-                languageCode = "FR",
-                source = DictionarySource.Asset("francais.txt")
+fun DictionaryPickerDialogPreview() {
+    WordCutTheme {
+        DictionaryPickerDialog(
+            dictionaries = listOf(
+                Dictionary(
+                    id = "francais.txt",
+                    displayName = "French",
+                    languageCode = "FR",
+                    source = DictionarySource.Asset("francais.txt")
+                ),
+                Dictionary(
+                    id = "english.txt",
+                    displayName = "English",
+                    languageCode = "US",
+                    source = DictionarySource.Asset("english.txt")
+                )
             ),
-        ),
-        selectedDictionaryId = "francais.txt",
-        onDismiss = {},
-        onDictionarySelected = {}
-    )
+            selectedDictionaryId = "francais.txt",
+            onDismiss = {},
+            onDictionarySelected = {}
+        )
+    }
 }

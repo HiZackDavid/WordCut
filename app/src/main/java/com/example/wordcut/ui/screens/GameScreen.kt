@@ -33,6 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.wordcut.domain.models.Dictionary
+import com.example.wordcut.domain.models.DictionarySource
 import com.example.wordcut.ui.components.DictionaryPickerDialog
 import com.example.wordcut.ui.components.LanguageButton
 import com.example.wordcut.ui.layouts.GameLayout
@@ -66,8 +68,9 @@ fun GameScreenContent(
     onRestart: () -> Unit = {},
     onKeyPressed: (Char) -> Unit = {},
     onDictionarySelected: (String) -> Unit = {},
+    initialShowDictionaryDialog: Boolean = false
 ) {
-    var showDictionaryDialog by remember { mutableStateOf(false) }
+    var showDictionaryDialog by remember { mutableStateOf(initialShowDictionaryDialog) }
     
     Scaffold (
         modifier = modifier.fillMaxSize(),
@@ -270,4 +273,43 @@ fun GameScreenPhonePreview() {
 @Composable
 fun LoadingGamePreview() {
     GameScreenContent(uiState = GameUiState())
+}
+
+@Preview(
+    name = "Dictionary Picker Preview",
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun DictionaryPickerPreview() {
+    WordCutTheme {
+        GameScreenContent(
+            uiState = GameUiState(
+                word = "CIRCULER",
+                currentRowIndex = 1,
+                remainingTimeSeconds = 101,
+                selectedDictionaryId = "francais.txt",
+                availableDictionaries = listOf(
+                    Dictionary(
+                        id = "francais.txt",
+                        displayName = "French",
+                        languageCode = "FR",
+                        source = DictionarySource.Asset("francais.txt")
+                    ),
+                    Dictionary(
+                        id = "english.txt",
+                        displayName = "English",
+                        languageCode = "US",
+                        source = DictionarySource.Asset("english.txt")
+                    )
+                ),
+                remainingLetterCounts = mapOf(
+                    'C' to 1, 'I' to 1, 'R' to 1,
+                    'U' to 1, 'L' to 1, 'E' to 1
+                ),
+                rows = buildDemoRows().subList(0, 2)
+            ),
+            initialShowDictionaryDialog = true
+        )
+    }
 }
