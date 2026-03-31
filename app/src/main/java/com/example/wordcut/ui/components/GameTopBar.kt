@@ -55,7 +55,7 @@ fun GameTopBar(
                 }
             }
             Row {
-                LanguageButton(
+                DictionarySelectorButton(
                     languageCode = selectedDictionaryCode,
                     onClick = onDictionaryClick
                 )

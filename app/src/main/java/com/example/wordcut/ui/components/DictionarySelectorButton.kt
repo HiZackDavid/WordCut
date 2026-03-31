@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import flagkit.Flag
 
 @Composable
-fun LanguageButton(
+fun DictionarySelectorButton(
     languageCode: String,
     onClick: () -> Unit = {}
 ) {
@@ -54,13 +54,13 @@ fun LanguageButton(
 @Preview
 @Composable
 fun FrenchPreview() {
-    LanguageButton("FR")
+    DictionarySelectorButton("FR")
 }
 
 @Preview
 @Composable
 fun EnglishPreview() {
-    LanguageButton("US")
+    DictionarySelectorButton("US")
 }
 
 @Preview(
@@ -78,8 +78,8 @@ fun PhonePreview() {
             horizontalArrangement = Arrangement.spacedBy(10.dp),
 
         ) {
-            LanguageButton("FR")
-            LanguageButton("US")
+            DictionarySelectorButton("FR")
+            DictionarySelectorButton("US")
         }
     }
 
