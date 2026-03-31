@@ -2,6 +2,8 @@ package com.example.wordcut.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.wordcut.domain.models.Dictionary
+import com.example.wordcut.domain.models.DictionarySource
 import com.example.wordcut.domain.models.GameState
 import com.example.wordcut.domain.usecases.DeleteLetterUseCase
 import com.example.wordcut.domain.usecases.StartGameUseCase
@@ -34,13 +36,38 @@ class GameViewModel @Inject constructor(
     private var gameDurationSeconds = 120
 
     private var selectedDictionaryId: String = "francais.txt"
+    private val availableDictionaries = listOf(
+        Dictionary(
+            id = "francais.txt",
+            displayName = "French",
+            languageCode = "FR",
+            source = DictionarySource.Asset("francais.txt")
+        ),
+        Dictionary(
+            id = "english.txt",
+            displayName = "English",
+            languageCode = "EN",
+            source = DictionarySource.Asset("english.txt")
+        )
+    )
+
+    init {
+        resetGame()
+    }
+
+    fun changeDictionary(dictionaryId: String){
+        selectedDictionaryId = dictionaryId
+        resetGame()
+    }
 
     fun resetGame() {
         viewModelScope.launch {
             domaineState = startGame(selectedDictionaryId)
             _uiState.value = domaineState.toUiState().copy(
                 remainingTimeSeconds = gameDurationSeconds,
-                isTimeUp = false
+                isTimeUp = false,
+                selectedDictionaryId = selectedDictionaryId,
+                availableDictionaries = availableDictionaries
             )
             startTimer()
         }
@@ -97,11 +124,9 @@ class GameViewModel @Inject constructor(
 
         _uiState.value = domaineState.toUiState().copy(
             remainingTimeSeconds = current.remainingTimeSeconds,
-            isTimeUp = current.isTimeUp
+            isTimeUp = current.isTimeUp,
+            selectedDictionaryId = selectedDictionaryId,
+            availableDictionaries = availableDictionaries
         )
-    }
-
-    init {
-        resetGame()
     }
 }
