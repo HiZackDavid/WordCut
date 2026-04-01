@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,8 +73,10 @@ fun GameScreenContent(
     var showDictionaryDialog by remember { mutableStateOf(initialShowDictionaryDialog) }
     var showInfoDialog by remember { mutableStateOf(initialShowInfoDialog) }
 
-    if (uiState.showInfoDialogOnStart && !showInfoDialog) {
-        showInfoDialog = true
+    LaunchedEffect(uiState.showInfoDialogOnStart) {
+        if (uiState.showInfoDialogOnStart) {
+            showInfoDialog = true
+        }
     }
 
     Scaffold (
@@ -225,6 +228,80 @@ private fun buildDemoRows(): List<GameRowModel> {
     )
 }
 
+private fun previewDictionaries(): List<Dictionary> {
+    return listOf(
+        Dictionary(
+            id = "francais.txt",
+            displayName = "French",
+            languageCode = "FR",
+            source = DictionarySource.Asset("francais.txt")
+        ),
+        Dictionary(
+            id = "english.txt",
+            displayName = "English",
+            languageCode = "EN",
+            source = DictionarySource.Asset("english.txt")
+        )
+    )
+}
+
+private fun previewPlayingUiState(): GameUiState {
+    val word = "MATELAS"
+    val letters = word.toList()
+
+    return GameUiState(
+        word = word,
+        currentRowIndex = 2,
+        remainingTimeSeconds = 101,
+        isTimeUp = false,
+        isPaused = false,
+        selectedDictionaryId = "francais.txt",
+        availableDictionaries = previewDictionaries(),
+        showInfoDialogOnStart = false,
+        remainingLetterCounts = mapOf(
+            'M' to 1, 'E' to 1, 'T' to 1,
+            'A' to 1, 'L' to 1
+        ),
+        rows = buildDemoRows().subList(0, 2) + listOf(
+            GameRowModel(
+                letters = "ME".toList(),
+                nbCells = letters.size,
+                nbActiveCells = letters.size - 3,
+                hasCommitted = false
+            )
+        )
+    )
+}
+
+private fun previewDictionaryPickerUiState(): GameUiState {
+    return GameUiState(
+        word = "MATELAS",
+        currentRowIndex = 1,
+        remainingTimeSeconds = 101,
+        isTimeUp = false,
+        isPaused = false,
+        selectedDictionaryId = "francais.txt",
+        availableDictionaries = previewDictionaries(),
+        showInfoDialogOnStart = false,
+        remainingLetterCounts = mapOf(
+            'M' to 1, 'E' to 1, 'T' to 1,
+            'A' to 1, 'L' to 1
+        ),
+        rows = buildDemoRows().subList(0, 2)
+    )
+}
+
+private fun previewInfoDialogUiState(): GameUiState {
+    return GameUiState(
+        remainingTimeSeconds = 120,
+        isTimeUp = false,
+        isPaused = true,
+        selectedDictionaryId = "francais.txt",
+        availableDictionaries = previewDictionaries(),
+        showInfoDialogOnStart = true
+    )
+}
+
 @Preview(
     name = "Phone Preview",
     showBackground = true,
@@ -232,26 +309,9 @@ private fun buildDemoRows(): List<GameRowModel> {
 )
 @Composable
 fun GameScreenPhonePreview() {
-    val word = "MATELAS"
-    val letters = word.toList()
     WordCutTheme {
         GameScreenContent(
-            uiState = GameUiState(
-                word = word,
-                currentRowIndex = 2,
-                remainingLetterCounts = mapOf(
-                    'M' to 1, 'E' to 1, 'T' to 1,
-                    'A' to 1, 'L' to 1
-                ),
-                rows = buildDemoRows().subList(0, 2) + listOf(
-                    GameRowModel(
-                        letters = "ME".toList(),
-                        nbCells = letters.size,
-                        nbActiveCells = letters.size-3,
-                        hasCommitted = false
-                    )
-                )
-            ),
+            uiState = previewPlayingUiState(),
             initialShowInfoDialog = false
         )
     }
@@ -260,10 +320,16 @@ fun GameScreenPhonePreview() {
 @Preview
 @Composable
 fun LoadingGamePreview() {
-    GameScreenContent(
-        uiState = GameUiState(),
-        initialShowInfoDialog = false
-    )
+    WordCutTheme {
+        GameScreenContent(
+            uiState = GameUiState(
+                selectedDictionaryId = "francais.txt",
+                availableDictionaries = previewDictionaries(),
+                showInfoDialogOnStart = false
+            ),
+            initialShowInfoDialog = false
+        )
+    }
 }
 
 @Preview(
@@ -275,31 +341,7 @@ fun LoadingGamePreview() {
 fun DictionaryPickerPreview() {
     WordCutTheme {
         GameScreenContent(
-            uiState = GameUiState(
-                word = "MATELAS",
-                currentRowIndex = 1,
-                remainingTimeSeconds = 101,
-                selectedDictionaryId = "francais.txt",
-                availableDictionaries = listOf(
-                    Dictionary(
-                        id = "francais.txt",
-                        displayName = "French",
-                        languageCode = "FR",
-                        source = DictionarySource.Asset("francais.txt")
-                    ),
-                    Dictionary(
-                        id = "english.txt",
-                        displayName = "English",
-                        languageCode = "EN",
-                        source = DictionarySource.Asset("english.txt")
-                    )
-                ),
-                remainingLetterCounts = mapOf(
-                    'M' to 1, 'E' to 1, 'T' to 1,
-                    'A' to 1, 'L' to 1
-                ),
-                rows = buildDemoRows().subList(0, 2)
-            ),
+            uiState = previewDictionaryPickerUiState(),
             initialShowInfoDialog = false,
             initialShowDictionaryDialog = true
         )
@@ -315,9 +357,7 @@ fun DictionaryPickerPreview() {
 fun InfoDialogScreenPreview() {
     WordCutTheme {
         GameScreenContent(
-            uiState = GameUiState(
-                remainingTimeSeconds = 120
-            ),
+            uiState = previewInfoDialogUiState(),
             initialShowInfoDialog = true
         )
     }
