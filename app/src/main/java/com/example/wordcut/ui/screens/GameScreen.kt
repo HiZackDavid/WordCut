@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.wordcut.domain.models.Dictionary
 import com.example.wordcut.domain.models.DictionarySource
-import com.example.wordcut.ui.components.DictionaryPickerDialog
+import com.example.wordcut.ui.components.Dialog.DictionaryPickerDialog
 import com.example.wordcut.ui.components.GameTopBar
 import com.example.wordcut.ui.layouts.GameLayout
 import com.example.wordcut.ui.layouts.KeyboardLayout
@@ -121,6 +121,7 @@ fun GameScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
+                contentAlignment = Alignment.Center
             ){
                 Text("Loading...")
             }

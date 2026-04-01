@@ -1,4 +1,4 @@
-package com.example.wordcut.ui.components
+package com.example.wordcut.ui.components.Dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
