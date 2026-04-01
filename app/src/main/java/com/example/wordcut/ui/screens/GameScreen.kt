@@ -51,6 +51,7 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = hil
         onSubmit = { gameViewModel.submitWord() },
         onKeyPressed = { gameViewModel.typeLetter(it) },
         onDictionarySelected = { gameViewModel.changeDictionary(it) },
+        onStartupInfoDismissed = { gameViewModel.dismissStartupInfoDialog() },
         modifier = modifier
     )
 }
@@ -64,11 +65,16 @@ fun GameScreenContent(
     onRestart: () -> Unit = {},
     onKeyPressed: (Char) -> Unit = {},
     onDictionarySelected: (String) -> Unit = {},
+    onStartupInfoDismissed: () -> Unit = {},
     initialShowDictionaryDialog: Boolean = false,
     initialShowInfoDialog: Boolean = false
 ) {
     var showDictionaryDialog by remember { mutableStateOf(initialShowDictionaryDialog) }
     var showInfoDialog by remember { mutableStateOf(initialShowInfoDialog) }
+
+    if (uiState.showInfoDialogOnStart && !showInfoDialog) {
+        showInfoDialog = true
+    }
 
     Scaffold (
         modifier = modifier.fillMaxSize(),
@@ -164,7 +170,13 @@ fun GameScreenContent(
 
     if (showInfoDialog) {
         GameInfoDialog (
-            onDismiss = { showInfoDialog = false }
+            onDismiss = {
+                showInfoDialog = false
+
+                if (uiState.showInfoDialogOnStart) {
+                    onStartupInfoDismissed()
+                }
+            }
         )
     }
 }
@@ -239,7 +251,8 @@ fun GameScreenPhonePreview() {
                         hasCommitted = false
                     )
                 )
-            )
+            ),
+            initialShowInfoDialog = false
         )
     }
 }
@@ -247,7 +260,10 @@ fun GameScreenPhonePreview() {
 @Preview
 @Composable
 fun LoadingGamePreview() {
-    GameScreenContent(uiState = GameUiState())
+    GameScreenContent(
+        uiState = GameUiState(),
+        initialShowInfoDialog = false
+    )
 }
 
 @Preview(
@@ -284,6 +300,7 @@ fun DictionaryPickerPreview() {
                 ),
                 rows = buildDemoRows().subList(0, 2)
             ),
+            initialShowInfoDialog = false,
             initialShowDictionaryDialog = true
         )
     }

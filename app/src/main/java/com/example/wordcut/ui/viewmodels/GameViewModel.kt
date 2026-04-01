@@ -62,19 +62,35 @@ class GameViewModel @Inject constructor(
 
     fun resetGame() {
         viewModelScope.launch {
+            val previousState = _uiState.value
+            val shouldShowInfo = previousState.word.isEmpty() && !previousState.showInfoDialogOnStart
+
             domaineState = startGame(selectedDictionaryId)
+
             _uiState.value = domaineState.toUiState().copy(
                 remainingTimeSeconds = gameDurationSeconds,
                 isTimeUp = false,
+                isPaused = shouldShowInfo,
                 selectedDictionaryId = selectedDictionaryId,
-                availableDictionaries = availableDictionaries
+                availableDictionaries = availableDictionaries,
+                showInfoDialogOnStart = shouldShowInfo
             )
+
             startTimer()
         }
     }
 
-    fun typeLetter(rawCharacter: Char) {
+    fun dismissStartupInfoDialog() {
         if (_uiState.value.isTimeUp) return
+
+        _uiState.value = _uiState.value.copy(
+            showInfoDialogOnStart = false,
+            isPaused = false
+        )
+    }
+
+    fun typeLetter(rawCharacter: Char) {
+        if (_uiState.value.isTimeUp || _uiState.value.isPaused) return
         if (!::domaineState.isInitialized) return
 
         domaineState = typeLetter(domaineState, rawCharacter)
@@ -82,7 +98,7 @@ class GameViewModel @Inject constructor(
     }
 
     fun delete() {
-        if (_uiState.value.isTimeUp) return
+        if (_uiState.value.isTimeUp  || _uiState.value.isPaused) return
         if (!::domaineState.isInitialized) return
 
         domaineState = deleteLetter(domaineState)
@@ -90,7 +106,7 @@ class GameViewModel @Inject constructor(
     }
 
     fun submitWord() {
-        if (_uiState.value.isTimeUp) return
+        if (_uiState.value.isTimeUp  || _uiState.value.isPaused) return
         if (!::domaineState.isInitialized) return
 
         viewModelScope.launch {
@@ -109,6 +125,11 @@ class GameViewModel @Inject constructor(
             while (_uiState.value.remainingTimeSeconds > 0) {
                 delay(1000) // 1 second
                 val current = _uiState.value
+
+                if (current.isPaused || current.isTimeUp) {
+                    continue
+                }
+
                 val next = current.remainingTimeSeconds - 1
 
                 _uiState.value = current.copy(
@@ -125,6 +146,7 @@ class GameViewModel @Inject constructor(
         _uiState.value = domaineState.toUiState().copy(
             remainingTimeSeconds = current.remainingTimeSeconds,
             isTimeUp = current.isTimeUp,
+            isPaused = current.isPaused,
             selectedDictionaryId = selectedDictionaryId,
             availableDictionaries = availableDictionaries
         )
