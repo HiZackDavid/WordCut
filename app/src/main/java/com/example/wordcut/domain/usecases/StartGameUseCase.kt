@@ -8,8 +8,8 @@ import com.example.wordcut.domain.utils.remainingLetterCounts
 class StartGameUseCase(
     private val wordRepository: WordRepository
 ) {
-    operator fun invoke(): GameState {
-        val word = wordRepository.getRandomWord().uppercase()
+    suspend operator fun invoke(dictionaryId: String): GameState {
+        val word = wordRepository.getRandomWord(dictionaryId).uppercase()
         val letters = word.toList()
 
         val rows = listOf(

@@ -1,5 +1,6 @@
 package com.example.wordcut.di
 
+import com.example.wordcut.data.datasources.AssetDictionaryDataSource
 import com.example.wordcut.data.datasources.LocalWordDataSource
 import com.example.wordcut.data.repositories.LocalWordRepository
 import com.example.wordcut.domain.repositories.WordRepository
@@ -20,8 +21,7 @@ object AppModule {
     fun provideLocalWordDataSource(): LocalWordDataSource = LocalWordDataSource()
 
     @Provides @Singleton
-    fun provideWordRepository(local: LocalWordDataSource): WordRepository =
-        LocalWordRepository(local)
+    fun provideWordRepository(repo: LocalWordRepository): WordRepository = repo
 
     @Provides
     fun provideStartGameUseCase(repo: WordRepository): StartGameUseCase =

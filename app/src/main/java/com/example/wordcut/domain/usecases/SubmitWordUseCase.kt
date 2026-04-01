@@ -8,7 +8,7 @@ import com.example.wordcut.domain.utils.remainingLetterCounts
 class SubmitWordUseCase(
     private val wordRepository: WordRepository
 ) {
-    operator fun invoke(state: GameState): GameState {
+    suspend operator fun invoke(dictionaryId: String, state: GameState): GameState {
         if (state.isGameOver) return state
 
         val rowIndex = state.currentRowIndex
@@ -24,7 +24,7 @@ class SubmitWordUseCase(
         if (removedCount !in 1..3) return state
 
         if (!isConstructedFromSource(typedLetters, sourceWord.toList())) return state
-        if (!wordRepository.isValidWord(typed)) return state
+        if (!wordRepository.isValidWord(dictionaryId = dictionaryId, word = typed)) return state
 
         val point1 = when (removedCount) {
             1 -> 3

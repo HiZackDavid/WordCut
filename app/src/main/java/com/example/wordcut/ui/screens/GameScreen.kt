@@ -1,34 +1,37 @@
 package com.example.wordcut.ui.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.wordcut.domain.models.Dictionary
+import com.example.wordcut.domain.models.DictionarySource
+import com.example.wordcut.ui.components.Dialog.DictionaryPickerDialog
+import com.example.wordcut.ui.components.GameTopBar
 import com.example.wordcut.ui.layouts.GameLayout
 import com.example.wordcut.ui.layouts.KeyboardLayout
 import com.example.wordcut.ui.models.GameRowModel
@@ -46,6 +49,7 @@ fun GameScreen(modifier: Modifier = Modifier, gameViewModel: GameViewModel = hil
         onDelete = { gameViewModel.delete() },
         onSubmit = { gameViewModel.submitWord() },
         onKeyPressed = { gameViewModel.typeLetter(it) },
+        onDictionarySelected = { gameViewModel.changeDictionary(it) },
         modifier = modifier
     )
 }
@@ -57,24 +61,59 @@ fun GameScreenContent(
     onDelete: () -> Unit = {},
     onSubmit: () -> Unit = {},
     onRestart: () -> Unit = {},
-    onKeyPressed: (Char) -> Unit = {}
+    onKeyPressed: (Char) -> Unit = {},
+    onDictionarySelected: (String) -> Unit = {},
+    initialShowDictionaryDialog: Boolean = false
 ) {
+    var showDictionaryDialog by remember { mutableStateOf(initialShowDictionaryDialog) }
+    
     Scaffold (
         modifier = modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             GameTopBar(
                 title = "WORDCUT",
-                remainingTimeSeconds = uiState.remainingTimeSeconds
+                remainingTimeSeconds = uiState.remainingTimeSeconds,
+                selectedDictionaryCode = uiState.availableDictionaries
+                    .firstOrNull { it.id == uiState.selectedDictionaryId }
+                    ?.languageCode ?: "FR",
+                onDictionaryClick = { showDictionaryDialog = true }
             )
         },
         bottomBar = {
-            KeyboardLayout(
-                availableLetterCounts = uiState.remainingLetterCounts,
-                onKeyPressed = onKeyPressed,
-                onSubmit = onSubmit,
-                onDelete = onDelete
-            )
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Surface(
+                       onClick = onRestart
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = Color(0xFFf2e4e7),
+                                    shape = RoundedCornerShape(4.dp)
+                                )
+                                .padding(8.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "Restart",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFae7b8d)
+                            )
+                        }
+                    }
+                }
+                KeyboardLayout(
+                    availableLetterCounts = uiState.remainingLetterCounts,
+                    onKeyPressed = onKeyPressed,
+                    onSubmit = onSubmit,
+                    onDelete = onDelete
+                )
+            }
         }
     ) { innerPadding ->
         if (uiState.rows.isEmpty()) {
@@ -82,7 +121,7 @@ fun GameScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-
+                contentAlignment = Alignment.Center
             ){
                 Text("Loading...")
             }
@@ -99,7 +138,6 @@ fun GameScreenContent(
                     contentAlignment = Alignment.TopCenter
                 ) {
                     GameLayout(
-                        modifier = modifier.padding(innerPadding),
                         rows = uiState.rows,
                         activeRowIndex = uiState.currentRowIndex
                     )
@@ -107,56 +145,18 @@ fun GameScreenContent(
             }
         }
     }
-}
 
-@Composable
-fun GameTopBar(
-    title: String,
-    remainingTimeSeconds: Int,
-    onBack: () -> Unit = {},
-    onInfo: () -> Unit = {}
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .height(76.dp)
-                    .padding(horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                }
-                Text(
-                    text = title.uppercase(),
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
-                )
-                IconButton(onClick = onInfo) {
-                    Icon(Icons.Outlined.Info, contentDescription = "Hint")
-                }
+    if (showDictionaryDialog) {
+        DictionaryPickerDialog(
+            dictionaries = uiState.availableDictionaries,
+            selectedDictionaryId = uiState.selectedDictionaryId,
+            onDismiss = { showDictionaryDialog = false },
+            onDictionarySelected = { dictionaryId ->
+                showDictionaryDialog = false
+                onDictionarySelected(dictionaryId)
             }
-            Row {
-                Text(
-                    text = formatTime(remainingTimeSeconds),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray,
-                    fontSize = 24.sp
-                )
-            }
-        }
+        )
     }
-}
-
-private fun formatTime(totalSeconds: Int): String {
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return "%02d:%02d".format(minutes, seconds)
 }
 
 private fun buildDemoRows(): List<GameRowModel> {
@@ -238,4 +238,43 @@ fun GameScreenPhonePreview() {
 @Composable
 fun LoadingGamePreview() {
     GameScreenContent(uiState = GameUiState())
+}
+
+@Preview(
+    name = "Dictionary Picker Preview",
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun DictionaryPickerPreview() {
+    WordCutTheme {
+        GameScreenContent(
+            uiState = GameUiState(
+                word = "MATELAS",
+                currentRowIndex = 1,
+                remainingTimeSeconds = 101,
+                selectedDictionaryId = "francais.txt",
+                availableDictionaries = listOf(
+                    Dictionary(
+                        id = "francais.txt",
+                        displayName = "French",
+                        languageCode = "FR",
+                        source = DictionarySource.Asset("francais.txt")
+                    ),
+                    Dictionary(
+                        id = "english.txt",
+                        displayName = "English",
+                        languageCode = "EN",
+                        source = DictionarySource.Asset("english.txt")
+                    )
+                ),
+                remainingLetterCounts = mapOf(
+                    'M' to 1, 'E' to 1, 'T' to 1,
+                    'A' to 1, 'L' to 1
+                ),
+                rows = buildDemoRows().subList(0, 2)
+            ),
+            initialShowDictionaryDialog = true
+        )
+    }
 }

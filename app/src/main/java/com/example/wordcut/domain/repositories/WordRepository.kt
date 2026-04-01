@@ -1,6 +1,6 @@
 package com.example.wordcut.domain.repositories
 
 interface WordRepository {
-    fun getRandomWord(): String
-    fun isValidWord(word: String): Boolean
+    suspend fun getRandomWord(dictionaryId: String): String
+    suspend fun isValidWord(dictionaryId: String, word: String): Boolean
 }
