@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,8 +29,7 @@ fun GameTopBar(
     selectedDictionaryCode: String,
     modifier: Modifier = Modifier,
     onDictionaryClick: () -> Unit,
-    onBack: () -> Unit = {},
-    onInfo: () -> Unit = {},
+    onInfoClick: () -> Unit = {},
 ) {
     Surface(
         modifier = modifier.fillMaxWidth()
@@ -69,18 +67,27 @@ fun GameTopBar(
                     onClick = onDictionaryClick
                 )
                 Row {
-                    IconButton(onClick = onInfo) {
+                    IconButton(onClick = onInfoClick) {
                         Icon(Icons.Outlined.Info, contentDescription = "Hint")
                     }
                 }
             }
             Row {
-                Text(
-                    text = formatTime(remainingTimeSeconds),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray,
-                    fontSize = 24.sp
-                )
+                if (remainingTimeSeconds > 0) {
+                    Text(
+                        text = formatTime(remainingTimeSeconds),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray,
+                        fontSize = 24.sp
+                    )
+                } else {
+                    Text(
+                        text = "Game Over",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Red,
+                        fontSize = 24.sp
+                    )
+                }
             }
         }
     }
@@ -98,6 +105,17 @@ fun GameTopBarPreview () {
     GameTopBar(
         title = "WORDCUT",
         remainingTimeSeconds = 101,
+        selectedDictionaryCode = "FR",
+        onDictionaryClick = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameTopBarGameOverPreview () {
+    GameTopBar(
+        title = "WORDCUT",
+        remainingTimeSeconds = 0,
         selectedDictionaryCode = "FR",
         onDictionaryClick = {}
     )
