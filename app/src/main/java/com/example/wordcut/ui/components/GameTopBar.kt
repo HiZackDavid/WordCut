@@ -46,12 +46,6 @@ fun GameTopBar(
                     .padding(horizontal = 4.dp),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(
-                    onClick = onBack,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                }
                 Text(
                     text = title.uppercase(),
                     style = MaterialTheme.typography.titleLarge,

@@ -96,13 +96,13 @@ fun DictionaryPickerDialog (
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "Select Dictionary",
+                        text = "Select a dictionary",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2F3A4C)
                     )
                     Text(
-                        text = "Select a game dictionary",
+                        text = "⚠️ Selecting will restart the game",
                         style = MaterialTheme.typography.bodyMedium,
                         color = PickerSubtitleColor,
                         textAlign = TextAlign.Center
