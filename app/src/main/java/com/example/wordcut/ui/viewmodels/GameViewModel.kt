@@ -35,7 +35,7 @@ class GameViewModel @Inject constructor(
     private var countdown: Job? = null
     private var gameDurationSeconds = 120
 
-    private var selectedDictionaryId: String = "english.txt"
+    private var selectedDictionaryId: String = "francais.txt"
     private val availableDictionaries = listOf(
         Dictionary(
             id = "francais.txt",
