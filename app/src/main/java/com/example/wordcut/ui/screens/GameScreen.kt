@@ -121,7 +121,6 @@ fun GameScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-
             ){
                 Text("Loading...")
             }

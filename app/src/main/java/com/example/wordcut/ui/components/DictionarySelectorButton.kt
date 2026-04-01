@@ -62,6 +62,8 @@ fun DictionarySelectorButton(
     }
 }
 
+// FlagCodes: https://github.com/acolombo11/flagkit-compose/tree/master/flagkit/src/commonMain/kotlin/flagkit/flags
+
 @Preview(showBackground = true)
 @Composable
 fun FrenchPreview() {

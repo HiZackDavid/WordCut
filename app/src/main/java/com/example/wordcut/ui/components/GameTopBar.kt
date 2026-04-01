@@ -66,12 +66,12 @@ fun GameTopBar(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 DictionarySelectorButton(
-                    flagCode = selectedDictionaryCode,
-                    label = when (selectedDictionaryCode) {
+                    flagCode = when (selectedDictionaryCode) {
                         "FR" -> "FR"
                         "EN" -> "US"
                         else -> ""
                     },
+                    label = selectedDictionaryCode,
                     onClick = onDictionaryClick
                 )
                 Row {
