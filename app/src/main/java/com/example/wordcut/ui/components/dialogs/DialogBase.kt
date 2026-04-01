@@ -80,14 +80,16 @@ fun DialogBase(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun DialogBasePreview() {
     DialogBase(
-        title = "Title",
-        onDismiss = {},
-        modifier = Modifier
+        title = "Preview Dialog",
+        onDismiss = {}
     ) {
-        Text("Hello")
+        Text(
+            text = "Hello",
+            modifier = Modifier.padding(20.dp)
+        )
     }
 }

@@ -30,8 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.wordcut.domain.models.Dictionary
 import com.example.wordcut.domain.models.DictionarySource
-import com.example.wordcut.ui.components.dialogs.DictionaryPickerDialog
 import com.example.wordcut.ui.components.GameTopBar
+import com.example.wordcut.ui.components.dialogs.DictionaryPickerDialog
+import com.example.wordcut.ui.components.dialogs.GameInfoDialog
 import com.example.wordcut.ui.layouts.GameLayout
 import com.example.wordcut.ui.layouts.KeyboardLayout
 import com.example.wordcut.ui.models.GameRowModel
@@ -63,10 +64,12 @@ fun GameScreenContent(
     onRestart: () -> Unit = {},
     onKeyPressed: (Char) -> Unit = {},
     onDictionarySelected: (String) -> Unit = {},
-    initialShowDictionaryDialog: Boolean = false
+    initialShowDictionaryDialog: Boolean = false,
+    initialShowInfoDialog: Boolean = false
 ) {
     var showDictionaryDialog by remember { mutableStateOf(initialShowDictionaryDialog) }
-    
+    var showInfoDialog by remember { mutableStateOf(initialShowInfoDialog) }
+
     Scaffold (
         modifier = modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -77,7 +80,8 @@ fun GameScreenContent(
                 selectedDictionaryCode = uiState.availableDictionaries
                     .firstOrNull { it.id == uiState.selectedDictionaryId }
                     ?.languageCode ?: "FR",
-                onDictionaryClick = { showDictionaryDialog = true }
+                onDictionaryClick = { showDictionaryDialog = true },
+                onInfoClick = { showInfoDialog = true }
             )
         },
         bottomBar = {
@@ -155,6 +159,12 @@ fun GameScreenContent(
                 showDictionaryDialog = false
                 onDictionarySelected(dictionaryId)
             }
+        )
+    }
+
+    if (showInfoDialog) {
+        GameInfoDialog (
+            onDismiss = { showInfoDialog = false }
         )
     }
 }
@@ -275,6 +285,23 @@ fun DictionaryPickerPreview() {
                 rows = buildDemoRows().subList(0, 2)
             ),
             initialShowDictionaryDialog = true
+        )
+    }
+}
+
+@Preview(
+    name = "Info Dialog Preview",
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun InfoDialogScreenPreview() {
+    WordCutTheme {
+        GameScreenContent(
+            uiState = GameUiState(
+                remainingTimeSeconds = 120
+            ),
+            initialShowInfoDialog = true
         )
     }
 }

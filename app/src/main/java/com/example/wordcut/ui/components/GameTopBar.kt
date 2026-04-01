@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,8 +29,7 @@ fun GameTopBar(
     selectedDictionaryCode: String,
     modifier: Modifier = Modifier,
     onDictionaryClick: () -> Unit,
-    onBack: () -> Unit = {},
-    onInfo: () -> Unit = {},
+    onInfoClick: () -> Unit = {},
 ) {
     Surface(
         modifier = modifier.fillMaxWidth()
@@ -69,7 +67,7 @@ fun GameTopBar(
                     onClick = onDictionaryClick
                 )
                 Row {
-                    IconButton(onClick = onInfo) {
+                    IconButton(onClick = onInfoClick) {
                         Icon(Icons.Outlined.Info, contentDescription = "Hint")
                     }
                 }
