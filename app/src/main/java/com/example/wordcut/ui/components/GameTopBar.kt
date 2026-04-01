@@ -73,12 +73,21 @@ fun GameTopBar(
                 }
             }
             Row {
-                Text(
-                    text = formatTime(remainingTimeSeconds),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray,
-                    fontSize = 24.sp
-                )
+                if (remainingTimeSeconds > 0) {
+                    Text(
+                        text = formatTime(remainingTimeSeconds),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray,
+                        fontSize = 24.sp
+                    )
+                } else {
+                    Text(
+                        text = "Game Over",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Red,
+                        fontSize = 24.sp
+                    )
+                }
             }
         }
     }
@@ -96,6 +105,17 @@ fun GameTopBarPreview () {
     GameTopBar(
         title = "WORDCUT",
         remainingTimeSeconds = 101,
+        selectedDictionaryCode = "FR",
+        onDictionaryClick = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameTopBarGameOverPreview () {
+    GameTopBar(
+        title = "WORDCUT",
+        remainingTimeSeconds = 0,
         selectedDictionaryCode = "FR",
         onDictionaryClick = {}
     )
