@@ -1,9 +1,11 @@
 package com.example.wordcut.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Info
@@ -26,39 +28,57 @@ fun GameTopBar(
     title: String,
     remainingTimeSeconds: Int,
     selectedDictionaryCode: String,
+    modifier: Modifier = Modifier,
     onDictionaryClick: () -> Unit,
     onBack: () -> Unit = {},
-    onInfo: () -> Unit = {}
+    onInfo: () -> Unit = {},
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp),
+                contentAlignment = Alignment.Center
             ) {
-                IconButton(onClick = onBack) {
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
-
                 Text(
                     text = title.uppercase(),
                     style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
+                    textAlign = TextAlign.Center
                 )
-                IconButton(onClick = onInfo) {
-                    Icon(Icons.Outlined.Info, contentDescription = "Hint")
-                }
             }
-            Row {
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 DictionarySelectorButton(
-                    languageCode = selectedDictionaryCode,
+                    flagCode = selectedDictionaryCode,
+                    label = when (selectedDictionaryCode) {
+                        "FR" -> "FR"
+                        "EN" -> "US"
+                        else -> ""
+                    },
                     onClick = onDictionaryClick
                 )
+                Row {
+                    IconButton(onClick = onInfo) {
+                        Icon(Icons.Outlined.Info, contentDescription = "Hint")
+                    }
+                }
             }
             Row {
                 Text(
