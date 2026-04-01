@@ -263,7 +263,7 @@ fun DictionaryPickerPreview() {
                     Dictionary(
                         id = "english.txt",
                         displayName = "English",
-                        languageCode = "US",
+                        languageCode = "EN",
                         source = DictionarySource.Asset("english.txt")
                     )
                 ),
